@@ -4,7 +4,9 @@ export default class extends Controller {
   static targets = ["message", "menu", "skip"]
 
   connect() {
+    this.scene = "opening"
     this.startOpening()
+    
   }
 
   // --------------------------------
@@ -36,13 +38,18 @@ export default class extends Controller {
   }
 
   showNextOpeningMessage() {
-    if (this.currentMessage < this.openingMessages.length) {
-      this.showMessage(this.openingMessages[this.currentMessage])
-      this.currentMessage += 1
-    } else {
+  if (this.currentMessage < this.openingMessages.length) {
+    const message = this.openingMessages[this.currentMessage]
+
+    this.showMessage(message)
+    this.currentMessage += 1
+
+    // 最後のセリフだった場合だけ
+    if (message === "なに？ まだ言いたいことがあるのか？") {
       this.showYesNoMenu()
     }
   }
+}
 
   // --------------------------------
   // オープニングのセリフを次へ
@@ -51,17 +58,18 @@ export default class extends Controller {
 next(event) {
   event.preventDefault()
 
-  // 「はい」ルート中なら、はいルートを進める
-  if (this.yesMessages && this.yesMessageIndex !== undefined) {
+  if (this.scene === "no") {
+    this.nextAfterNo()
+    return
+  }
+
+  if (this.scene === "yes") {
     this.nextYesMessage()
     return
   }
 
-  // オープニング
-  if (this.currentMessage < this.openingMessages.length) {
+  if (this.scene === "opening") {
     this.showNextOpeningMessage()
-  } else {
-    this.showYesNoMenu()
   }
 }
   // --------------------------------
@@ -91,6 +99,8 @@ next(event) {
 // --------------------------------
 
 yes() {
+  this.scene = "yes"
+
   this.yesMessages = [
     "何？　チョサ…剣？　活かした名前の武器じゃな",
     "ワシは剣なんて、持っとりゃせんよ…"
@@ -126,27 +136,24 @@ nextYesMessage() {
   // --------------------------------
 
   no() {
-    this.showMessage(
-      "そうかそうか、物分かりの良い子は嫌いではないぞ"
-    )
+  this.scene = "no"
 
-    this.menuTarget.innerHTML = `
-      <button
-        class="menu-item"
-        data-action="click->hat#nextAfterNo">
-        <span class="cursor">▶</span>
-        次へ
-      </button>
-    `
-  }
+  this.showMessage(
+    "そうかそうか、物分かりの良い子は嫌いではないぞ"
+  )
+
+  this.menuTarget.innerHTML = ""
+}
 
   nextAfterNo() {
-    this.showMessage(
-      "さて、オヌシは何をしに来たんじゃ？"
-    )
+  this.scene = "main"
 
-    this.showMainMenu()
-  }
+  this.showMessage(
+    "さて、オヌシは何をしに来たんじゃ？"
+  )
+
+  this.showMainMenu()
+}
 
   // --------------------------------
   // メインメニュー
@@ -164,10 +171,14 @@ nextYesMessage() {
   }
 
   sorting() {
-    this.showMessage(
-      "組み分けをするんじゃな？"
-    )
-  }
+  this.scene = "sorting"
+
+  this.showMessage(
+    "組み分けをするんじゃな？"
+  )
+
+  this.menuTarget.innerHTML = ""
+}
 
   // --------------------------------
   // スキップ

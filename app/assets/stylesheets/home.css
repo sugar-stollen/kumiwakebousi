@@ -1,0 +1,218 @@
+.home {
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+
+background-image: url("/assets/background.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+
+color: #fff;
+font-family: "Courier New", monospace;
+}
+
+/* --------------------------------
+ゲーム画面
+-------------------------------- */
+
+.home-screen {
+position: relative;
+width: 100%;
+height: 100%;
+}
+
+/* --------------------------------
+帽子
+-------------------------------- */
+.hat-area {
+  position: absolute;
+
+  top: 15%;
+  left: 50%;
+
+  width: 100%;
+  height: 60%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hat-image {
+  width: 900px;
+  height: 900px;
+
+  background-image: url("/assets/kumiwakebousi.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  filter: drop-shadow(4px 6px 4px rgba(0, 0, 0, 0.7));
+}
+/* --------------------------------
+下部コマンドエリア
+-------------------------------- */
+
+.command-area {
+position: absolute;
+
+left: 3%;
+right: 3%;
+bottom: 3%;
+
+height: 25%;
+
+display: grid;
+grid-template-columns: 2fr 1fr;
+
+gap: 15px;
+}
+
+/* --------------------------------
+共通のゲーム風枠
+-------------------------------- */
+
+.message-box,
+.menu-box {
+background: rgba(0, 0, 0, 0.78);
+
+border: 3px solid #fff;
+
+border-radius: 4px;
+
+box-shadow:
+0 0 0 2px #222,
+0 5px 12px rgba(0, 0, 0, 0.7);
+
+box-sizing: border-box;
+}
+
+/* --------------------------------
+   セリフ
+-------------------------------- */
+
+.message-box {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  padding: 25px 35px;
+
+  font-size: clamp(16px, 2vw, 24px);
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+}
+
+.message-box p {
+  margin: 0;
+}
+
+
+/* --------------------------------
+   スキップボタン
+-------------------------------- */
+
+.skip-button {
+  position: absolute;
+
+  right: 12px;
+  bottom: 8px;
+
+  padding: 3px 10px;
+
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+
+  color: rgba(255, 255, 255, 0.7);
+
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.skip-button:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+
+/* --------------------------------
+   選択肢
+-------------------------------- */
+
+.menu-item {
+  display: block;
+
+  padding: 8px 12px;
+
+  background: transparent;
+  border: none;
+
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 18px;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-item .cursor {
+  display: inline-block;
+  width: 20px;
+
+  opacity: 0;
+}
+
+.menu-item:hover .cursor {
+  opacity: 1;
+}
+
+/* --------------------------------
+スマートフォン
+-------------------------------- */
+
+@media (max-width: 700px) {
+.hat-area {
+top: 3%;
+height: 60%;
+}
+
+.hat-image {
+width: 220px;
+height: 220px;
+}
+
+.command-area {
+left: 2%;
+right: 2%;
+bottom: 2%;
+
+height: 32%;
+
+grid-template-columns: 1fr;
+grid-template-rows: 1fr 1fr;
+
+gap: 8px;
+
+}
+
+.message-box {
+padding: 12px 18px;
+}
+
+.menu-box {
+padding: 8px 18px;
+}
+}

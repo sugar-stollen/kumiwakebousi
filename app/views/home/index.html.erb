@@ -1,0 +1,40 @@
+<div class="home">
+  <main class="home-screen" data-controller="hat">
+
+
+<!-- 帽子 -->
+<div class="hat-area">
+  <div class="hat-image"></div>
+</div>
+
+<!-- 下部コマンドエリア -->
+<div class="command-area">
+
+  <!-- セリフ -->
+   <div
+  class="message-box"
+  data-action="click->hat#next">
+
+  <p data-hat-target="message"></p>
+
+  <!-- スキップ -->
+  <button
+    class="skip-button"
+    data-hat-target="skip"
+    data-action="click->hat#skip">
+    スキップ
+  </button>
+
+</div>
+
+  <!-- 選択肢 -->
+  <div
+    class="menu-box"
+    data-hat-target="menu">
+  </div>
+
+</div>
+
+
+  </main>
+</div>

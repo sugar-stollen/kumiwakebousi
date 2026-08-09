@@ -77,6 +77,11 @@ gap: 15px;
 
 .message-box,
 .menu-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 25px 35px;
+
 background: rgba(0, 0, 0, 0.78);
 
 border: 3px solid #fff;
@@ -180,18 +185,18 @@ box-sizing: border-box;
 }
 
 /* --------------------------------
-スマートフォン
+スマートフォン用配置
 -------------------------------- */
 
 @media (max-width: 700px) {
 .hat-area {
-top: 3%;
+top: 15%;
 height: 60%;
 }
 
 .hat-image {
-width: 220px;
-height: 220px;
+width: 1220px;
+height: 1220px;
 }
 
 .command-area {
@@ -234,3 +239,4 @@ padding: 8px 18px;
   color: #fff;
   font-family: "Courier New", monospace;
 }
+

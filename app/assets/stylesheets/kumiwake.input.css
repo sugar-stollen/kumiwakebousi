@@ -1,0 +1,259 @@
+/* ========================================
+   名簿入力画面
+======================================== */
+
+.kumiwake-input {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+
+  background-image: url("/assets/kumiwake-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: #fff;
+  font-family: "Courier New", monospace;
+}
+
+/* ========================================
+   名簿入力パネル
+======================================== */
+
+.kumiwake-input-panel {
+  position: relative;
+
+  width: min(75vw, 500px);
+  aspect-ratio: 2 / 3;
+
+  padding: 50px 45px 40px;
+
+  box-sizing: border-box;
+
+  background: transparent;
+
+  border: none;
+
+  box-shadow: none;
+
+  overflow-y: auto;
+}
+
+/* ========================================
+   パネル内の背景画像
+======================================== */
+
+.kumiwake-input-panel::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/assets/input-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  opacity: 0.9;
+
+  z-index: 0;
+}
+
+/* ========================================
+   背景画像より内容を前に出す
+======================================== */
+
+.kumiwake-input-panel > * {
+  position: relative;
+
+  z-index: 1;
+}
+
+
+/* ========================================
+   タイトル
+======================================== */
+
+.kumiwake-input-panel h2 {
+  margin: 0 0 10px;
+
+  text-align: center;
+
+  font-size: 26px;
+}
+
+
+/* ========================================
+   説明文
+======================================== */
+
+.input-message {
+  margin: 0 0 20px;
+
+  text-align: center;
+
+  font-size: 18px;
+
+  line-height: 1.6;
+}
+
+
+/* ========================================
+   名前入力欄
+======================================== */
+
+.name-inputs {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  width: 80%;
+}
+
+/* 1つの入力欄 */
+
+.name-input-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+/* 番号 */
+
+.name-input-row span {
+  width: 35px;
+
+  flex-shrink: 0;
+
+  text-align: right;
+
+  font-size: 16px;
+}
+
+
+/* 名前入力 */
+
+.name-input-row input {
+  flex: 1;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 8px 10px;
+
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  border: 2px solid #fff;
+  border-radius: 3px;
+
+  color: #222;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+
+.name-input-row input:focus {
+  background: #fff;
+
+  border-color: #fff;
+
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+
+/* ========================================
+   下部ボタン
+======================================== */
+
+.input-buttons {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 30px;
+
+  margin-top: 20px;
+
+  transform: translateX(-30px);
+}
+
+
+/* 共通ボタン */
+
+.input-buttons button {
+  padding: 10px 15px;
+
+  background: transparent;
+
+  border: 2px solid #fff;
+
+  border-radius: 3px;
+
+  color: #fff;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+
+/* マウスを乗せたとき */
+
+.input-buttons button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* ========================================
+   スマートフォン用配置
+======================================== */
+
+@media (max-width: 700px) {
+
+  .kumiwake-input-panel {
+    width: 94%;
+    height: 90%;
+
+    padding: 20px;
+  }
+
+
+  .kumiwake-input-panel h2 {
+    font-size: 24px;
+  }
+
+
+  .input-message {
+    font-size: 16px;
+  }
+
+
+  .input-buttons {
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+
+  .input-buttons button {
+    width: 100%;
+  }
+}

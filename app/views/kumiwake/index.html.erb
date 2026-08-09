@@ -1,38 +1,34 @@
 <div class="kumiwake">
-  <main class="home-screen">
+  <main class="home-screen" data-controller="kumiwake">
 
-    <!-- 帽子 -->
-    <div class="hat-area">
-      <div class="hat-image"></div>
+  <!-- 帽子 -->
+  <div class="hat-area">
+    <div class="hat-image"></div>
+  </div>
+
+  <!-- 下部コマンドエリア -->
+  <div class="command-area">
+
+    <!-- セリフ -->
+    <div class="message-box">
+      <p data-kumiwake-target="message"></p>
     </div>
 
-    <!-- 下部コマンドエリア -->
-    <div class="command-area">
+    <!-- 選択肢 -->
+    <div class="menu-box" data-kumiwake-target="menu">
 
-      <!-- セリフ -->
-      <div class="message-box">
-        <p>
-          では組み分けをはじめるぞ<br>
-          ええと……名簿は……
-        </p>
-      </div>
+      <%= link_to kumiwake_input_path, class: "menu-item" do %>
+        <span class="cursor">▶</span>
+        入力する
+      <% end %>
 
-      <!-- 選択肢 -->
-      <div class="menu-box">
-
-        <button class="menu-item">
-          <span class="cursor">▶</span>
-          入力する
-        </button>
-
-        <button class="menu-item">
-          <span class="cursor">▶</span>
-          CSVからインポート
-        </button>
-
-      </div>
+      <button class="menu-item">
+        <span class="cursor">▶</span>
+        CSVからインポート
+      </button>
 
     </div>
 
-  </main>
+  </div>
+
 </div>

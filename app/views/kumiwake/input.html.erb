@@ -1,0 +1,36 @@
+<div class="kumiwake-input">
+
+  <div class="kumiwake-input-panel">
+
+    <h2>名簿</h2>
+
+    <p class="input-message">
+      名簿を入力してください
+    </p>
+
+    <div class="name-inputs">
+
+      <% 10.times do |i| %>
+        <div class="name-input-row">
+          <span><%= i + 1 %>.</span>
+          <input type="text" placeholder="名前を入力">
+        </div>
+      <% end %>
+
+    </div>
+
+    <div class="input-buttons">
+
+      <button class="add-name-button">
+        ＋ 名前を追加
+      </button>
+
+      <button class="complete-button">
+        入力完了
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

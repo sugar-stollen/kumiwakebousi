@@ -216,3 +216,21 @@ padding: 12px 18px;
 padding: 8px 18px;
 }
 }
+
+/* ｰｰｰｰｰｰｰｰｰｰｰｰｰ
+組み分け画面 
+ｰｰｰｰｰｰｰｰｰｰｰｰｰ*/
+
+.kumiwake {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  background-image: url("/assets/kumiwake-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: #fff;
+  font-family: "Courier New", monospace;
+}

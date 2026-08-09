@@ -177,18 +177,51 @@ nextYesMessage() {
     "組み分けをするんじゃな？"
   )
 
-  this.menuTarget.innerHTML = ""
+  // 次のクリックで「部屋を移動じゃ」へ進む
+  this.menuTarget.innerHTML = `
+    <button
+      class="menu-item"
+      data-action="click->hat#moveToKumiwake">
+      <span class="cursor">▶</span>
+      組み分けをはじめる
+    </button>
+  `
+}
+
+// --------------------------------
+// スキップ
+// --------------------------------
+
+skip() {
+  // オープニングを終了した状態にする
+  this.currentMessage = this.openingMessages.length
+
+  // 「いいえ」ルートの最後まで飛ばす
+  this.scene = "main"
+
+  // 「さて、オヌシは何をしに来たんじゃ？」を表示
+  this.showMessage(
+    "さて、オヌシは何をしに来たんじゃ？"
+  )
+
+  // 「組み分け」の選択肢を表示
+  this.showMainMenu()
 }
 
   // --------------------------------
-  // スキップ
+  // 組み分けページへ移動
   // --------------------------------
 
-  skip() {
+  moveToKumiwake() {
     this.showMessage(
-      "なに？ まだ言いたいことがあるのか？"
+      "では、部屋を移動じゃ"
     )
 
-    this.showYesNoMenu()
+    // 少し待ってから組み分けページへ移動
+    setTimeout(() => {
+      window.location.href = "/kumiwake"
+    }, 2000)
   }
+
 }
+

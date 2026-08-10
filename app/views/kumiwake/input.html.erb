@@ -1,36 +1,49 @@
 <div class="kumiwake-input">
-
   <div class="kumiwake-input-panel">
 
-    <h2>名簿</h2>
+    <h2>名　簿</h2>
 
     <p class="input-message">
-      名簿を入力してください
+      名前を入力してください
     </p>
 
-    <div class="name-inputs">
+    <div class="name-inputs" data-controller="name-input">
+      
+       <!-- 名前欄だけスクロールする部分 -->
+       <div
+       class="name-input-list"
+       data-name-input-target="list">
 
-      <% 10.times do |i| %>
-        <div class="name-input-row">
-          <span><%= i + 1 %>.</span>
-          <input type="text" placeholder="名前を入力">
+       <% 10.times do |i| %>
+       <div class="name-input-row">
+        <span><%= i + 1 %>.</span>
+
+        <input
+          type="text"
+          name="names[]"
+          placeholder="名前を入力">
+          
         </div>
+        
       <% end %>
 
-    </div>
+     </div>
+      <!-- ボタンはスクロールしない -->
+     <div class="input-buttons">
 
-    <div class="input-buttons">
+     <button
+      type="button"
+      data-action="click->name-input#add">
+      名前を追加
+     </button>
 
-      <button class="add-name-button">
-        ＋ 名前を追加
-      </button>
-
-      <button class="complete-button">
-        入力完了
-      </button>
-
-    </div>
+     <button type="button">
+      入力完了
+     </button>
 
   </div>
 
+</div>
+    
+  </div>
 </div>

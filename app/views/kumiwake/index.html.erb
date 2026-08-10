@@ -10,25 +10,24 @@
   <div class="command-area">
 
     <!-- セリフ -->
-    <div class="message-box">
-      <p data-kumiwake-target="message"></p>
-    </div>
+  <div
+    class="message-box"
+    data-action="click->kumiwake#nextMessage">
 
-    <!-- 選択肢 -->
-    <div class="menu-box" data-kumiwake-target="menu">
-
-      <%= link_to kumiwake_input_path, class: "menu-item" do %>
-        <span class="cursor">▶</span>
-        入力する
-      <% end %>
-
-      <button class="menu-item">
-        <span class="cursor">▶</span>
-        CSVからインポート
-      </button>
-
-    </div>
+  <p
+    data-kumiwake-target="message"
+    data-names-count="<%= @names.length %>"
+    data-from-input="<%= @from_name_input %>">
+  </p>
 
   </div>
+
+  <!-- 選択肢 -->
+  <div
+    class="menu-box"
+    data-kumiwake-target="menu">
+  </div>
+
+</div>
 
 </div>

@@ -148,6 +148,12 @@ nextYesMessage() {
   nextAfterNo() {
   this.scene = "main"
 
+  const skipButton = document.getElementById("opening-skip-button")
+
+  if (skipButton) {
+    skipButton.style.display = "none"
+  }
+
   this.showMessage(
     "さて、オヌシは何をしに来たんじゃ？"
   )
@@ -206,6 +212,13 @@ skip() {
 
   // 「組み分け」の選択肢を表示
   this.showMainMenu()
+
+  // スキップボタンを消す
+  const skipButton = document.getElementById("opening-skip-button")
+
+  if (skipButton) {
+    skipButton.style.display = "none"
+  }
 }
 
   // --------------------------------

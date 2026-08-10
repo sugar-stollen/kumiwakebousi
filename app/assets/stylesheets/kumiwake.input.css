@@ -17,7 +17,7 @@
   background-position: center;
   background-repeat: no-repeat;
 
-  color: #fff;
+  color: #222;
   font-family: "Courier New", monospace;
 }
 
@@ -41,7 +41,7 @@
 
   box-shadow: none;
 
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 /* ========================================
@@ -85,6 +85,8 @@
   text-align: center;
 
   font-size: 26px;
+
+  color: #222;
 }
 
 
@@ -100,6 +102,8 @@
   font-size: 18px;
 
   line-height: 1.6;
+
+  color: #222;
 }
 
 
@@ -108,12 +112,29 @@
 ======================================== */
 
 .name-inputs {
+  width: 100%;
+}
+
+.name-input-list {
   display: flex;
   flex-direction: column;
 
   gap: 9px;
 
-  width: 80%;
+  width: 100%;
+
+  height: 410px;
+
+  overflow-y: auto;
+
+  padding-right: 8px;
+
+  box-sizing: border-box;
+
+   /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 40, 20, 0.35) transparent;
+
 }
 
 /* 1つの入力欄 */
@@ -125,7 +146,9 @@
 
   gap: 10px;
 
-  width: 100%;
+  width: 80%;
+
+  margin: 0 auto;
 }
 
 /* 番号 */
@@ -138,6 +161,8 @@
   text-align: right;
 
   font-size: 16px;
+
+  color: #222;
 }
 
 
@@ -153,15 +178,17 @@
 
   box-sizing: border-box;
 
-  background: rgba(255, 255, 255, 0.9);
+  /* 白い背景を透明にする */
+  background: transparent;
 
-  border: 2px solid #fff;
-  border-radius: 3px;
+  /* 入力欄の線も少し薄くする */
+  border: none;
+  border-bottom: 1px solid rgba(60, 40, 20, 0.6);
+  border-radius: 0;
 
   color: #222;
 
   font-family: "Courier New", monospace;
-
   font-size: 15px;
 
   outline: none;
@@ -169,11 +196,11 @@
 
 
 .name-input-row input:focus {
-  background: #fff;
+  background: transparent;
 
-  border-color: #fff;
+  border-bottom-color: #222;
 
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  box-shadow: none;
 }
 
 
@@ -201,11 +228,11 @@
 
   background: transparent;
 
-  border: 2px solid #fff;
+  border: 2px solid #222;
 
   border-radius: 3px;
 
-  color: #fff;
+  color: #222;
 
   font-family: "Courier New", monospace;
 
@@ -223,37 +250,128 @@
 
 
 /* ========================================
-   スマートフォン用配置
+   以下　スマートフォン用配置
 ======================================== */
-
 @media (max-width: 700px) {
 
-  .kumiwake-input-panel {
-    width: 94%;
-    height: 90%;
+  /* ========================================
+     パネル
+  ======================================== */
 
-    padding: 20px;
+  .kumiwake-input-panel {
+    width: 95%;
+    height: 80%;
+
+    padding: 110px 30px 25px;
+
+    box-sizing: border-box;
   }
 
+
+  /* ========================================
+     羊皮紙の背景
+  ======================================== */
+
+  .kumiwake-input-panel::before {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+
+  /* ========================================
+     タイトル
+  ======================================== */
 
   .kumiwake-input-panel h2 {
-    font-size: 24px;
+    font-size: 22px;
+
+    margin-bottom: 6px;
   }
 
+
+  /* ========================================
+     説明文
+  ======================================== */
 
   .input-message {
-    font-size: 16px;
+    font-size: 14px;
+
+    margin-bottom: 10px;
   }
 
 
-  .input-buttons {
-    flex-direction: column;
+  /* ========================================
+     名前入力エリア
+  ======================================== */
 
-    gap: 10px;
+  .name-input-list {
+    width: 100%;
+
+    height: 350px;
+
+    overflow-y: auto;
+
+    padding-right: 5px;
+  }
+
+
+  /* ========================================
+     名前入力行
+  ======================================== */
+
+  .name-input-row {
+    width: 85%;
+
+    margin: 0 auto;
+
+    gap: 6px;
+  }
+
+
+  .name-input-row span {
+    width: 25px;
+
+    font-size: 13px;
+  }
+
+
+  .name-input-row input {
+    font-size: 13px;
+
+    padding: 5px 6px;
+  }
+
+
+  /* ========================================
+     ボタン
+  ======================================== */
+
+  .input-buttons {
+    display: flex;
+
+    flex-direction: row;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 1px;
+
+    transform: none;
   }
 
 
   .input-buttons button {
-    width: 100%;
+    width: auto;
+
+    min-width: 80px;
+
+    padding: 7px 9px;
+
+    font-size: 13px;
   }
+
 }

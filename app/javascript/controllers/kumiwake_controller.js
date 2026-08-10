@@ -30,16 +30,16 @@ export default class extends Controller {
   }
 
   showMenu() {
-    this.menuTarget.innerHTML = `
-      <button class="menu-item">
-        <span class="cursor">▶</span>
-        入力する
-      </button>
+  this.menuTarget.innerHTML = `
+    <a href="/kumiwake/input" class="menu-item">
+      <span class="cursor">▶</span>
+      入力する
+    </a>
 
-      <button class="menu-item">
-        <span class="cursor">▶</span>
-        CSVからインポート（未実装）
-      </button>
-    `
-  }
+    <button class="menu-item">
+      <span class="cursor">▶</span>
+      CSVからインポート（未実装）
+    </button>
+  `
+}
 }

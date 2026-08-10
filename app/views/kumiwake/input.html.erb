@@ -4,10 +4,12 @@
     <h2>名　簿</h2>
 
     <p class="input-message">
-      名前を入力してください
+      名前を3人以上入力してください
     </p>
 
     <div class="name-inputs" data-controller="name-input">
+
+      <%= form_with url: kumiwake_save_names_path, method: :post do %>
       
        <!-- 名前欄だけスクロールする部分 -->
        <div
@@ -37,11 +39,13 @@
       名前を追加
      </button>
 
-     <button type="button">
+      <button type="submit">
       入力完了
      </button>
 
   </div>
+     
+     <% end %>
 
 </div>
     

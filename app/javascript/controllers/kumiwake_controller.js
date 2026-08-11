@@ -9,12 +9,14 @@ export default class extends Controller {
     const count = this.messageTarget.dataset.namesCount
     const fromInput = this.messageTarget.dataset.fromInput
 
+    // 名簿人数を保存
+    this.namesCount = Number(count)
+
     if (fromInput === "true") {
-      this.startAfterInput(Number(count))
+      this.startAfterInput(this.namesCount)
       return
     }
 
-    // 初めてHOMEを開いた場合
     this.startInitial()
   }
 
@@ -102,10 +104,43 @@ export default class extends Controller {
 
 
       case "group-count-next":
-        this.currentStep = "group-count-number"
-        this.showMessage(`${this.selectedGroupCount}組じゃったわ`)
-        break
+        const groupCount = Number(this.selectedGroupCount)
+        const nameCount = Number(this.namesCount)
 
+       // --------------------------------
+       // エラーチェック
+       // --------------------------------
+
+       if (
+        nameCount <= 2 ||
+        groupCount <= 1 ||
+        groupCount >= nameCount
+      ) {
+        this.currentStep = "group-count-error"
+        this.showMessage(
+          "はて？…　名簿か組数が間違っているのやもしれん……"
+      )
+
+      break
+    }
+
+      // --------------------------------
+      // 正常ルート
+      // --------------------------------
+
+      this.currentStep = "group-count-number"
+
+      this.showMessage(
+        `${groupCount}組じゃったわ`
+     )
+
+     break
+
+     case "group-count-error":
+
+      window.location.href = "/kumiwake/input"
+
+      break
 
       case "group-count-number":
 
@@ -307,20 +342,15 @@ export default class extends Controller {
   // ========================================
 
   selectGroupCount(event) {
+  const groupCount =
+    Number(event.currentTarget.dataset.groupCount)
 
-    const groupCount =
-      Number(event.currentTarget.dataset.groupCount)
+  this.selectedGroupCount = groupCount
 
-    // 今は確認用
-    console.log(`組数: ${groupCount}`)
+  this.currentStep = "group-count"
 
-    this.selectedGroupCount = groupCount
-
-    this.currentStep = "group-count"
-
-    this.showMessage("そうじゃった　そうじゃった……")
-
-  }
+  this.showMessage("そうじゃった　そうじゃった……")
+}
 
 
   // ========================================
@@ -328,13 +358,126 @@ export default class extends Controller {
   // ========================================
 
   selectMoreGroups() {
+  this.currentStep = "group-count-input"
 
-    console.log("それ以上を選択")
+  const maxGroupCount = this.namesCount - 1
 
-    // ここに数字入力画面への処理を追加する
+  this.showGroupCountInput(maxGroupCount)
+}
+
+  // ========================================
+  // 組数を入力するフォーム
+  // ========================================
+   showGroupCountInput(maxGroupCount) {
+
+   this.menuTarget.innerHTML = `
+
+    <div class="group-count-input">
+
+      <p class="group-count-description">
+        2組から${maxGroupCount}組まで作成可能です。
+      </p>
+
+      <input
+        id="group-count-value"
+        type="number"
+        min="2"
+        max="${maxGroupCount}"
+        placeholder="組数"
+      >
+
+      <button
+        type="button"
+        class="group-count-submit"
+        data-action="click->kumiwake#confirmGroupCount">
+        決定
+      </button>
+
+    </div>
+
+  `
+}
+// ========================================
+// テンキー数字を追加する
+// ========================================
+
+inputGroupNumber(event) {
+
+  const number =
+    event.currentTarget.dataset.number
+
+  const input =
+    document.getElementById("group-count-value")
+
+  if (!input) {
+    return
   }
 
+  input.value += number
+}
+// ========================================
+// 1文字削除ボタン
+// ========================================
 
+deleteGroupNumber() {
+
+  const input =
+    document.getElementById("group-count-value")
+
+  if (!input) {
+    return
+  }
+
+  input.value =
+    input.value.slice(0, -1)
+}
+// ========================================
+// 組数入力確定ボタン
+// ========================================
+
+confirmGroupCount() {
+
+  const input =
+    document.getElementById("group-count-value")
+
+  if (!input || input.value === "") {
+    return
+  }
+
+  const groupCount = Number(input.value)
+
+  const maxGroupCount = this.namesCount - 1
+
+  // --------------------------------
+  // 組数チェック
+  // --------------------------------
+
+  if (
+    this.namesCount <= 2 ||
+    groupCount < 2 ||
+    groupCount > maxGroupCount
+  ) {
+    this.currentStep = "group-count-error"
+
+    this.showMessage(
+      "はて？…　名簿か組数が間違っているのやもしれん……"
+    )
+
+    return
+  }
+
+  // --------------------------------
+  // 正常
+  // --------------------------------
+
+  this.selectedGroupCount = groupCount
+
+  this.currentStep = "group-count"
+
+  this.showMessage(
+    "そうじゃった　そうじゃった……"
+  )
+}
   // ========================================
   // 組名についての選択肢
   // ========================================
@@ -385,12 +528,7 @@ export default class extends Controller {
   // 組名を「きく」
   // ========================================
 
-  askGroupNames() {
-
-    console.log("組名入力画面へ")
-
-    // 今後ここに組名入力画面への処理を追加
-
+    askGroupNames() {
+    window.location.href = "/kumiwake/group_names"
   }
-
 }

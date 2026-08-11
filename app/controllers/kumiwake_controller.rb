@@ -17,4 +17,10 @@ class KumiwakeController < ApplicationController
   redirect_to kumiwake_path
   end
 
+  class KumiwakeController < ApplicationController
+
+      def group_names
+      end
+  end
+
 end

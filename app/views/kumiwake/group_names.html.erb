@@ -1,0 +1,84 @@
+<div
+  class="kumiwake-input"
+  data-controller="group-name">
+
+  <div class="kumiwake-input-panel">
+
+    <h2>組　名</h2>
+
+    <p class="group-name-description">
+      組の名前を入力してください
+    </p>
+
+    <p class="group-name-limit">
+      2組から最大<%= @max_group_count %>組まで作成できます
+    </p>
+
+
+    <%= form_with url: kumiwake_save_group_names_path,
+                  method: :post,
+                  local: true do %>
+
+      <div
+        class="group-name-list"
+        data-group-name-list
+        data-max-groups="<%= @max_group_count %>">
+
+        <!-- 1組目 -->
+
+        <div class="group-name-row">
+
+          <span>1.</span>
+
+          <input
+            type="text"
+            name="group_names[]"
+            value="A組"
+            placeholder="A組">
+
+        </div>
+
+
+        <!-- 2組目 -->
+
+        <div class="group-name-row">
+
+          <span>2.</span>
+
+          <input
+            type="text"
+            name="group_names[]"
+            value="B組"
+            placeholder="B組">
+
+        </div>
+
+      </div>
+
+
+      <!-- 枠を増減 -->
+      <div class="group-name-controls">
+
+        <button
+          type="button"
+          data-action="click->group-name#addGroupName">
+          ＋
+        </button>
+
+        <button
+          type="button"
+          data-action="click->group-name#removeGroupName">
+          −
+        </button>
+
+        <button type="submit">
+          決定
+        </button>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+</div>

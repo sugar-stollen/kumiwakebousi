@@ -37,7 +37,9 @@ export default class extends Controller {
   startAfterInput(count) {
     this.currentStep = "confirm"
 
-    this.showMessage(`ふむふむ　全部で${count}名じゃな`)
+    this.showMessage(
+      `ふむふむ　全部で${count}名じゃな`
+    )
 
     // 1秒後に「はい / いいえ」
     this.showMenuAfterDelay(() => {
@@ -69,7 +71,9 @@ export default class extends Controller {
 
         this.currentStep = "initial-2"
 
-        this.showMessage("ええと……名簿は……")
+        this.showMessage(
+          "ええと……名簿は……"
+        )
 
         break
 
@@ -88,35 +92,12 @@ export default class extends Controller {
 
 
       // --------------------------------
-      // 組数確認後のセリフ
-      // 今後ここに追加していく
+      // 組名と組数を確認
       // --------------------------------
 
-      case "group-count":
+      case "group-question":
 
-        this.currentStep = "group-count-next"
-
-        this.showMessage("そうじゃった　そうじゃった……")
-
-        break
-
-
-      case "group-count-next":
-        this.currentStep = "group-count-number"
-        this.showMessage(`${this.selectedGroupCount}組じゃったわ`)
-        break
-
-
-      case "group-count-number":
-
-        this.currentStep = "group-name-question"
-
-        this.showMessage("それぞれ組には　名　があるんじゃが…")
-
-        // 1秒後に選択肢
-        this.showMenuAfterDelay(() => {
-          this.showGroupNameMenu()
-        })
+        window.location.href = "/kumiwake/group_names"
 
         break
     }
@@ -144,7 +125,6 @@ export default class extends Controller {
     setTimeout(() => {
       callback()
     }, 1000)
-
   }
 
 
@@ -227,13 +207,9 @@ export default class extends Controller {
     this.currentStep = "group-question"
 
     this.showMessage(
-      "はて？　いくつに分けるんじゃったかな？"
+      "ところでオヌシは組の名前と数は知っておるかの？"
     )
 
-    // 1秒後に組数選択
-    this.showMenuAfterDelay(() => {
-      this.showGroupCountMenu()
-    })
   }
 
 
@@ -249,147 +225,12 @@ export default class extends Controller {
 
 
   // ========================================
-  // 組数選択
+  // 組名入力画面へ
   // ========================================
 
-  showGroupCountMenu() {
+  goToGroupNames() {
 
-    this.menuTarget.innerHTML = `
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#selectGroupCount"
-        data-group-count="2">
-
-        <span class="cursor">▶</span>
-        2
-
-      </button>
-
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#selectGroupCount"
-        data-group-count="3">
-
-        <span class="cursor">▶</span>
-        3
-
-      </button>
-
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#selectGroupCount"
-        data-group-count="4">
-
-        <span class="cursor">▶</span>
-        4
-
-      </button>
-
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#selectMoreGroups">
-
-        <span class="cursor">▶</span>
-        それ以上
-
-      </button>
-
-    `
-  }
-
-
-  // ========================================
-  // 2・3・4を選択
-  // ========================================
-
-  selectGroupCount(event) {
-
-    const groupCount =
-      Number(event.currentTarget.dataset.groupCount)
-
-    // 今は確認用
-    console.log(`組数: ${groupCount}`)
-
-    this.selectedGroupCount = groupCount
-
-    this.currentStep = "group-count"
-
-    this.showMessage("そうじゃった　そうじゃった……")
-
-  }
-
-
-  // ========================================
-  // 「それ以上」
-  // ========================================
-
-  selectMoreGroups() {
-
-    console.log("それ以上を選択")
-
-    // ここに数字入力画面への処理を追加する
-  }
-
-
-  // ========================================
-  // 組名についての選択肢
-  // ========================================
-
-  showGroupNameMenu() {
-
-    this.menuTarget.innerHTML = `
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#defaultGroupNames">
-
-        <span class="cursor">▶</span>
-        知ってるからいい
-
-      </button>
-
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#askGroupNames">
-
-        <span class="cursor">▶</span>
-        きく
-
-      </button>
-
-    `
-  }
-
-
-  // ========================================
-  // デフォルトの組名
-  // ========================================
-
-  defaultGroupNames() {
-
-    console.log("アルファベットで組名を設定")
-
-    // 今後ここに
-    // A / B / C ...
-    // を設定する処理を追加
-
-  }
-
-
-  // ========================================
-  // 組名を「きく」
-  // ========================================
-
-  askGroupNames() {
-
-    console.log("組名入力画面へ")
-
-    // 今後ここに組名入力画面への処理を追加
+    window.location.href = "/kumiwake/group_names"
 
   }
 

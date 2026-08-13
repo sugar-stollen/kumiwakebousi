@@ -48,7 +48,6 @@ addGroupName(event) {
     <input
       type="text"
       name="group_names[]"
-      value="${nextName}"
       placeholder="${nextName}">
   `
 

@@ -2,6 +2,7 @@ class KumiwakeController < ApplicationController
   def index
     @names = session[:names] || []
     @from_name_input = session.delete(:from_name_input)
+    @from_group_name_input = session.delete(:from_group_name_input)
   end
 
   def input
@@ -19,12 +20,21 @@ class KumiwakeController < ApplicationController
 
   # グループ名保存用
   def save_group_names
-    group_names = params[:group_names].reject(&:blank?)
+    group_names = params[:group_names]
 
-    session[:group_names] = group_names
-    session[:group_count] = group_names.length
+    group_names = group_names.each_with_index.map do |name, index|
+     if name.blank?
+       "#{('A'.ord + index).chr}組"
+     else
+       name
+     end
+  end
 
-    redirect_to kumiwake_path
+  session[:group_names] = group_names
+  session[:group_count] = group_names.length
+  session[:from_group_name_input] = true
+
+  redirect_to kumiwake_path
   end
 
   # 組名入力画面

@@ -6,9 +6,22 @@ export default class extends Controller {
   connect() {
     this.menuTarget.innerHTML = ""
 
-    const count = this.messageTarget.dataset.namesCount
-    const fromInput = this.messageTarget.dataset.fromInput
+    const count = 
+      this.messageTarget.dataset.namesCount
 
+    const fromInput = 
+      this.messageTarget.dataset.fromInput
+
+    const fromGroupNameInput =
+    this.messageTarget.dataset.fromGroupNameInput
+
+     // 組名入力画面から戻ってきた場合
+    if (fromGroupNameInput === "true") {
+      this.startAfterGroupNames()
+      return
+    }
+
+    // 名簿入力画面から戻ってきた場合
     if (fromInput === "true") {
       this.startAfterInput(Number(count))
       return
@@ -26,7 +39,9 @@ export default class extends Controller {
   startInitial() {
     this.currentStep = "initial-1"
 
-    this.showMessage("では組み分けをはじめるぞ")
+    this.showMessage(
+      "では組み分けをはじめるぞ"
+    )
   }
 
 
@@ -41,10 +56,22 @@ export default class extends Controller {
       `ふむふむ　全部で${count}名じゃな`
     )
 
-    // 1秒後に「はい / いいえ」
     this.showMenuAfterDelay(() => {
       this.showConfirmMenu()
     })
+  }
+
+
+  // ========================================
+  // 組名入力から戻ってきた場合
+  // ========================================
+
+  startAfterGroupNames() {
+    this.currentStep = "group-names-finished"
+
+    this.showMessage(
+      "ほほぅ　オヌシよく知っておるな"
+    )
   }
 
 
@@ -59,7 +86,6 @@ export default class extends Controller {
     if (this.menuTarget.innerHTML !== "") {
       return
     }
-
 
     switch (this.currentStep) {
 
@@ -90,14 +116,142 @@ export default class extends Controller {
 
         break
 
-
-      // --------------------------------
-      // 組名と組数を確認
-      // --------------------------------
-
       case "group-question":
 
-        window.location.href = "/kumiwake/group_names"
+        this.goToGroupNames()
+
+        break
+
+
+      // ========================================
+      // 組名入力後
+      // ========================================
+
+      case "group-names-finished":
+
+        this.currentStep = "bousi-magic-1"
+
+        this.showMessage(
+          "では、いよいよ組み分けを始めるとするか・・・"
+        )
+
+        break
+
+
+      case "bousi-magic-1":
+
+        this.currentStep = "bousi-magic-2"
+
+        this.showMessage(
+          "っとその前に、大事なことを聞いておらんかったわい"
+        )
+
+        break
+
+
+      case "bousi-magic-2":
+
+        this.currentStep = "bousi-magic-3"
+
+        this.showMessage(
+          "ワシの魔法　クミワケ・カブルノｫボウシｨー　を使うかの？"
+        )
+
+        break
+
+
+      case "bousi-magic-3":
+
+        this.currentStep = "bousi-magic-4"
+
+        this.showMessage(
+          "この魔法はのぅ、過去に一度組み分けされた者同士が、なるべく違う組み合わせになる・・・という魔法じゃ！　すごいじゃろ？"
+        )
+
+        break
+
+
+      case "bousi-magic-4":
+
+        this.currentStep = "bousi-magic-5"
+
+        this.showMessage(
+          "ちなみに今回なら、だいたい○回くらいまでなら同じ組み合わせにならんようにできるぞい"
+        )
+
+        break
+
+
+      case "bousi-magic-5":
+
+        this.currentStep = "bousi-magic-6"
+
+        this.showMessage(
+          "ん？ なんで分かるのかじゃと？"
+        )
+
+        break
+
+
+      case "bousi-magic-6":
+
+        this.currentStep = "bousi-magic-7"
+
+        this.showMessage(
+          "な～に・・・ 簡単じゃよ・・・"
+        )
+
+        break
+
+
+      case "bousi-magic-7":
+
+        this.currentStep = "bousi-magic-8"
+
+        this.showMessage(
+          "勘　じゃ"
+        )
+
+        break
+
+
+      case "bousi-magic-8":
+
+        this.currentStep = "bousi-magic-question"
+
+        this.showMessage(
+          "さて、この魔法を使うかの？"
+        )
+
+        this.showMenuAfterDelay(() => {
+          this.showBousiMagicMenu()
+        })
+
+        break
+
+
+      // --------------------------------
+      // 魔法を使った後
+      // --------------------------------
+
+      case "bousi-magic-yes":
+
+        this.currentStep = "演出"
+
+        this.showMessage(
+          "よしきた！　では　魔法をかけるぞい"
+        )
+
+        break
+
+
+      case "bousi-magic-no":
+
+        this.currentStep = "演出"
+
+        this.showMessage(
+          "では、今回は　クミワケ・カブルノｫボウシｨー　は使わずに　組み分けを始めるぞい"
+        )
 
         break
     }
@@ -208,8 +362,10 @@ export default class extends Controller {
 
     this.showMessage(
       "ところでオヌシは組の名前と数は知っておるかの？"
+      
     )
-
+    
+    // 次のクリックで組名入力画面へ
   }
 
 
@@ -218,9 +374,28 @@ export default class extends Controller {
   // ========================================
 
   confirmNo() {
-
     window.location.href = "/kumiwake/input"
+  }
 
+
+  // ========================================
+  // 組名入力後の処理
+  // ========================================
+
+  showGroupNameMenu() {
+
+    this.menuTarget.innerHTML = `
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#goToGroupNames">
+
+        <span class="cursor">▶</span>
+        組名を決める
+
+      </button>
+
+    `
   }
 
 
@@ -229,9 +404,69 @@ export default class extends Controller {
   // ========================================
 
   goToGroupNames() {
-
     window.location.href = "/kumiwake/group_names"
-
   }
 
+
+  // ========================================
+  // ぼうし魔法
+  // ========================================
+
+  showBousiMagicMenu() {
+
+    this.menuTarget.innerHTML = `
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#bousiMagicYes">
+
+        <span class="cursor">▶</span>
+        使う
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#bousiMagicNo">
+
+        <span class="cursor">▶</span>
+        使わない
+
+      </button>
+
+    `
+  }
+
+
+  // ========================================
+  // 「使う」
+  // ========================================
+
+  bousiMagicYes() {
+
+    this.bousiMagic = true
+
+    this.currentStep = "bousi-magic-yes"
+
+    this.showMessage(
+      "よしきた！　では　魔法をかけるぞい"
+    )
+  }
+
+
+  // ========================================
+  // 「使わない」
+  // ========================================
+
+  bousiMagicNo() {
+
+    this.bousiMagic = false
+
+    this.currentStep = "bousi-magic-no"
+
+    this.showMessage(
+      "では、今回は　クミワケ・カブルノｫボウシｨー　は使わずに　組み分けを始めるぞい"
+    )
+  }
 }

@@ -12,7 +12,15 @@ class KumiwakeController < ApplicationController
   def save_names
     names = params[:names].reject(&:blank?)
 
-    session[:names] = names
+    members = names.each_with_index.map do |name, index|
+      {
+        id: index + 1,
+        name: name
+      }
+    end
+
+    session[:names] = members
+    session[:group_history] = []
     session[:from_name_input] = true
 
     redirect_to kumiwake_path
@@ -43,5 +51,17 @@ class KumiwakeController < ApplicationController
 
     # 最大組数は「名簿人数 - 1」
     @max_group_count = @names.length - 1
+  end
+
+  # 組み分け結果
+  def result
+  @groups = GroupAllocator.new(
+    members: session[:names],
+    group_count: session[:group_count]
+  ).call
+
+  @group_names = session[:group_names]
+
+  Rails.logger.debug "GROUPS: #{@groups.inspect}"
   end
 end

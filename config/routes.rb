@@ -17,6 +17,10 @@ Rails.application.routes.draw do
        to: "kumiwake#save_group_names",
        as: :kumiwake_save_group_names
 
+  get "kumiwake/result",
+      to: "kumiwake#result",
+      as: :kumiwake_result
+
   get 'home/index'
 
   get "up" => "rails/health#show",

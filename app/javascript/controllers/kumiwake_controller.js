@@ -81,6 +81,8 @@ export default class extends Controller {
 
   nextMessage() {
 
+
+
     // 選択肢が表示されているときは
     // セリフクリックでは進めない
     if (this.menuTarget.innerHTML !== "") {
@@ -231,12 +233,12 @@ export default class extends Controller {
 
 
       // --------------------------------
-      // 魔法を使った後
+      // 魔法を使う
       // --------------------------------
 
       case "bousi-magic-yes":
 
-        this.currentStep = "演出"
+        this.currentStep = "bousi-magic-yes-2"
 
         this.showMessage(
           "よしきた！　では　魔法をかけるぞい"
@@ -244,6 +246,16 @@ export default class extends Controller {
 
         break
 
+      case "bousi-magic-yes-2":
+
+        this.currentStep = "演出"
+
+        this.showMessage(
+        "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
+          
+        )
+
+        break
 
       case "bousi-magic-no":
 

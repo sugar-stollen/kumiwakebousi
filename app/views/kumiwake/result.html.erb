@@ -1,0 +1,23 @@
+<div class="kumiwake-result">
+
+  <h1>組み分け結果</h1>
+
+  <% @groups.each_with_index do |group, index| %>
+
+    <div class="group-result">
+
+      <h2>
+        <%= @group_names[index] %>
+      </h2>
+
+      <% group.each do |member| %>
+        <p>
+          <%= member["name"] %>
+        </p>
+      <% end %>
+
+    </div>
+
+  <% end %>
+
+</div>

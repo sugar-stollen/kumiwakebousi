@@ -18,6 +18,7 @@ class GroupAllocator
         best_groups = groups
       end
 
+      # 今回の組み合わせがすべて新しいなら終了
       break if score == total_pairs_per_round
     end
 
@@ -61,9 +62,7 @@ class GroupAllocator
   end
 
   def total_pairs_per_round
-    groups = make_group_sizes
-
-    groups.sum do |size|
+    make_group_sizes.sum do |size|
       size * (size - 1) / 2
     end
   end

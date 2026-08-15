@@ -280,8 +280,9 @@ export default class extends Controller {
           
         )
         this.showMenuAfterDelay(() => {
-          this.showBousiMagicMenu()()
+          this.showDrawMenu()
         })
+
         break
 
       case "bousi-magic-no":
@@ -514,7 +515,7 @@ export default class extends Controller {
   // ========================================
 // 演出はあとで作る　いまはスキップボタンから
 // 結果をみるボタン　で　結果画面に飛ぶようにする
-  showBousiMagicMenu() {
+  showDrawMenu() {
 
     this.menuTarget.innerHTML = `
 

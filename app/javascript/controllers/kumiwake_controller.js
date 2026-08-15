@@ -31,6 +31,31 @@ export default class extends Controller {
     this.startInitial()
   }
 
+    // ======================================== 
+    //  結果画面リンク用
+    // ========================================
+    goToDraw() {
+      const form = document.createElement("form")
+
+      form.method = "POST"
+      form.action = "/kumiwake/draw"
+
+      const csrfToken = document.querySelector(
+        'meta[name="csrf-token"]'
+      ).content
+
+      const csrfInput = document.createElement("input")
+
+      csrfInput.type = "hidden"
+      csrfInput.name = "authenticity_token"
+      csrfInput.value = csrfToken
+
+      form.appendChild(csrfInput)
+      document.body.appendChild(form)
+
+      form.submit()
+    }
+
 
   // ========================================
   // 最初の会話
@@ -254,7 +279,9 @@ export default class extends Controller {
         "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
           
         )
-
+        this.showMenuAfterDelay(() => {
+          this.showBousiMagicMenu()()
+        })
         break
 
       case "bousi-magic-no":
@@ -480,5 +507,26 @@ export default class extends Controller {
     this.showMessage(
       "では、今回は　クミワケ・カブルノｫボウシｨー　は使わずに　組み分けを始めるぞい"
     )
+  }
+
+  // ========================================
+  // 演出セリフ
+  // ========================================
+// 演出はあとで作る　いまはスキップボタンから
+// 結果をみるボタン　で　結果画面に飛ぶようにする
+  showBousiMagicMenu() {
+
+    this.menuTarget.innerHTML = `
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#goToDraw">
+
+        <span class="cursor">▶</span>
+        結果をみる
+
+      </button>
+
+    `
   }
 }

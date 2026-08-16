@@ -6,55 +6,105 @@ export default class extends Controller {
   connect() {
     this.menuTarget.innerHTML = ""
 
-    const count = 
+    const count =
       this.messageTarget.dataset.namesCount
 
-    const fromInput = 
+    const fromInput =
       this.messageTarget.dataset.fromInput
 
     const fromGroupNameInput =
-    this.messageTarget.dataset.fromGroupNameInput
+      this.messageTarget.dataset.fromGroupNameInput
 
-     // 組名入力画面から戻ってきた場合
+    const limitReached =
+      this.messageTarget.dataset.limitReached
+
+    const magicMode =
+      this.messageTarget.dataset.magicMode
+
+    const magicMaxRounds =
+      this.messageTarget.dataset.magicMaxRounds
+
+
+    // ========================================
+    // 魔法の上限に到達して戻ってきた
+    // ========================================
+
+    if (limitReached === "true") {
+      this.startAfterLimit()
+      return
+    }
+
+
+    // ========================================
+    // 組名入力画面から戻ってきた
+    // ========================================
+
     if (fromGroupNameInput === "true") {
       this.startAfterGroupNames()
       return
     }
 
-    // 名簿入力画面から戻ってきた場合
+
+    // ========================================
+    // 名簿入力画面から戻ってきた
+    // ========================================
+
     if (fromInput === "true") {
       this.startAfterInput(Number(count))
       return
     }
 
-    // 初めてHOMEを開いた場合
+
+    // ========================================
+    // 初めての組み分け
+    // ========================================
+
     this.startInitial()
   }
 
-    // ======================================== 
-    //  結果画面リンク用
-    // ========================================
-    goToDraw() {
-      const form = document.createElement("form")
 
-      form.method = "POST"
-      form.action = "/kumiwake/draw"
+  // ========================================
+  // 結果画面へ
+  // ========================================
 
-      const csrfToken = document.querySelector(
-        'meta[name="csrf-token"]'
-      ).content
+  goToDraw() {
+    this.submitDraw(this.bousiMagic === true)
+  }
 
-      const csrfInput = document.createElement("input")
 
-      csrfInput.type = "hidden"
-      csrfInput.name = "authenticity_token"
-      csrfInput.value = csrfToken
+  // ========================================
+  // 抽選POST
+  // ========================================
 
-      form.appendChild(csrfInput)
-      document.body.appendChild(form)
+  submitDraw(magicMode) {
+    const form = document.createElement("form")
 
-      form.submit()
-    }
+    form.method = "POST"
+    form.action = "/kumiwake/draw"
+
+    const csrfToken = document.querySelector(
+      'meta[name="csrf-token"]'
+    ).content
+
+    const csrfInput = document.createElement("input")
+
+    csrfInput.type = "hidden"
+    csrfInput.name = "authenticity_token"
+    csrfInput.value = csrfToken
+
+    const modeInput = document.createElement("input")
+
+    modeInput.type = "hidden"
+    modeInput.name = "magic_mode"
+    modeInput.value = magicMode ? "true" : "false"
+
+    form.appendChild(csrfInput)
+    form.appendChild(modeInput)
+
+    document.body.appendChild(form)
+
+    form.submit()
+  }
 
 
   // ========================================
@@ -101,24 +151,34 @@ export default class extends Controller {
 
 
   // ========================================
-  // セリフをクリックして次へ
+  // 魔法の上限到達後
+  // ========================================
+
+  startAfterLimit() {
+    this.currentStep = "limit-1"
+
+    this.showMessage(
+      "おやおや？　すべての組み合わせが終わったようじゃぞ"
+    )
+  }
+
+
+  // ========================================
+  // セリフをクリック
   // ========================================
 
   nextMessage() {
 
-
-
-    // 選択肢が表示されているときは
-    // セリフクリックでは進めない
+    // 選択肢が表示されている場合は進めない
     if (this.menuTarget.innerHTML !== "") {
       return
     }
 
     switch (this.currentStep) {
 
-      // --------------------------------
-      // 最初のセリフ
-      // --------------------------------
+      // ========================================
+      // 最初
+      // ========================================
 
       case "initial-1":
 
@@ -131,10 +191,6 @@ export default class extends Controller {
         break
 
 
-      // --------------------------------
-      // 名簿についてのセリフ
-      // --------------------------------
-
       case "initial-2":
 
         this.currentStep = "initial-menu"
@@ -142,6 +198,7 @@ export default class extends Controller {
         this.showMenu()
 
         break
+
 
       case "group-question":
 
@@ -203,7 +260,9 @@ export default class extends Controller {
         this.currentStep = "bousi-magic-5"
 
         this.showMessage(
-          "ちなみに今回なら、だいたい○回くらいまでなら同じ組み合わせにならんようにできるぞい"
+          "ちなみに今回なら、だいたい" +
+          this.messageTarget.dataset.magicMaxRounds +
+          "回くらいまでなら同じ組み合わせにならんようにできるぞい"
         )
 
         break
@@ -257,9 +316,9 @@ export default class extends Controller {
         break
 
 
-      // --------------------------------
+      // ========================================
       // 魔法を使う
-      // --------------------------------
+      // ========================================
 
       case "bousi-magic-yes":
 
@@ -271,27 +330,78 @@ export default class extends Controller {
 
         break
 
+
       case "bousi-magic-yes-2":
 
         this.currentStep = "演出"
 
         this.showMessage(
-        "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
-          
+          "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
         )
+
         this.showMenuAfterDelay(() => {
           this.showDrawMenu()
         })
 
         break
 
+
+      // ========================================
+      // 魔法を使わない
+      // ========================================
+
       case "bousi-magic-no":
 
-        this.currentStep = "演出"
+        this.currentStep = "normal-draw"
 
         this.showMessage(
           "では、今回は　クミワケ・カブルノｫボウシｨー　は使わずに　組み分けを始めるぞい"
         )
+
+        this.showMenuAfterDelay(() => {
+          this.showNormalDrawMenu()
+        })
+
+        break
+
+
+      // ========================================
+      // 魔法上限到達後
+      // ========================================
+
+      case "limit-1":
+
+        this.currentStep = "limit-2"
+
+        this.showMessage(
+          "ワシの魔法の効果はココまでのようじゃな"
+        )
+
+        break
+
+
+      case "limit-2":
+
+        this.currentStep = "limit-3"
+
+        this.showMessage(
+          "ここから先は魔法は使わずに通常の組み分けになるが・・・"
+        )
+
+        break
+
+
+      case "limit-3":
+
+        this.currentStep = "limit-4"
+
+        this.showMessage(
+          "まだ組み分けを続けるかの？"
+        )
+
+        this.showMenuAfterDelay(() => {
+          this.showLimitMenu()
+        })
 
         break
     }
@@ -304,18 +414,15 @@ export default class extends Controller {
 
   showMessage(text) {
     this.messageTarget.textContent = text
-
-    // セリフを表示したら選択肢を消す
     this.menuTarget.innerHTML = ""
   }
 
 
   // ========================================
-  // 1秒後に選択肢を表示
+  // 1秒後に選択肢
   // ========================================
 
   showMenuAfterDelay(callback) {
-
     setTimeout(() => {
       callback()
     }, 1000)
@@ -323,7 +430,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 最初の選択肢
+  // 最初のメニュー
   // ========================================
 
   showMenu() {
@@ -384,7 +491,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 「入力する」
+  // 名簿入力
   // ========================================
 
   goToInput() {
@@ -393,7 +500,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 「はい」
+  // 人数確認「はい」
   // ========================================
 
   confirmYes() {
@@ -402,15 +509,12 @@ export default class extends Controller {
 
     this.showMessage(
       "ところでオヌシは組の名前と数は知っておるかの？"
-      
     )
-    
-    // 次のクリックで組名入力画面へ
   }
 
 
   // ========================================
-  // 「いいえ」
+  // 人数確認「いいえ」
   // ========================================
 
   confirmNo() {
@@ -419,28 +523,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 組名入力後の処理
-  // ========================================
-
-  showGroupNameMenu() {
-
-    this.menuTarget.innerHTML = `
-
-      <button
-        class="menu-item"
-        data-action="click->kumiwake#goToGroupNames">
-
-        <span class="cursor">▶</span>
-        組名を決める
-
-      </button>
-
-    `
-  }
-
-
-  // ========================================
-  // 組名入力画面へ
+  // 組名入力
   // ========================================
 
   goToGroupNames() {
@@ -449,7 +532,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // ぼうし魔法
+  // 魔法選択
   // ========================================
 
   showBousiMagicMenu() {
@@ -480,7 +563,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 「使う」
+  // 魔法を使う
   // ========================================
 
   bousiMagicYes() {
@@ -496,7 +579,7 @@ export default class extends Controller {
 
 
   // ========================================
-  // 「使わない」
+  // 魔法を使わない
   // ========================================
 
   bousiMagicNo() {
@@ -510,11 +593,11 @@ export default class extends Controller {
     )
   }
 
+
   // ========================================
-  // 演出セリフ
+  // 魔法モードの結果を見る
   // ========================================
-// 演出はあとで作る　いまはスキップボタンから
-// 結果をみるボタン　で　結果画面に飛ぶようにする
+
   showDrawMenu() {
 
     this.menuTarget.innerHTML = `
@@ -529,5 +612,122 @@ export default class extends Controller {
       </button>
 
     `
+  }
+
+
+  // ========================================
+  // 通常モードの結果を見る
+  // ========================================
+
+  showNormalDrawMenu() {
+
+    this.menuTarget.innerHTML = `
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#goToDraw">
+
+        <span class="cursor">▶</span>
+        結果をみる
+
+      </button>
+
+    `
+  }
+
+
+  // ========================================
+  // 上限到達後の選択肢
+  // ========================================
+
+  showLimitMenu() {
+
+    this.menuTarget.innerHTML = `
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#continueNormal">
+
+        <span class="cursor">▶</span>
+        続ける
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        data-action="click->kumiwake#finish">
+
+        <span class="cursor">▶</span>
+        終わる
+
+      </button>
+
+    `
+  }
+
+
+  // ========================================
+  // 魔法終了 → 通常モード
+  // ========================================
+
+  continueNormal() {
+
+    const form = document.createElement("form")
+
+    form.method = "POST"
+    form.action = "/kumiwake/draw"
+
+    const csrfToken = document.querySelector(
+      'meta[name="csrf-token"]'
+    ).content
+
+    const csrfInput = document.createElement("input")
+
+    csrfInput.type = "hidden"
+    csrfInput.name = "authenticity_token"
+    csrfInput.value = csrfToken
+
+    const switchInput = document.createElement("input")
+
+    switchInput.type = "hidden"
+    switchInput.name = "switch_to_normal"
+    switchInput.value = "true"
+
+    form.appendChild(csrfInput)
+    form.appendChild(switchInput)
+
+    document.body.appendChild(form)
+
+    form.submit()
+  }
+
+
+  // ========================================
+  // 組み分け終了
+  // ========================================
+
+  finish() {
+
+    const form = document.createElement("form")
+
+    form.method = "POST"
+    form.action = "/kumiwake/finish"
+
+    const csrfToken = document.querySelector(
+      'meta[name="csrf-token"]'
+    ).content
+
+    const csrfInput = document.createElement("input")
+
+    csrfInput.type = "hidden"
+    csrfInput.name = "authenticity_token"
+    csrfInput.value = csrfToken
+
+    form.appendChild(csrfInput)
+
+    document.body.appendChild(form)
+
+    form.submit()
   }
 }

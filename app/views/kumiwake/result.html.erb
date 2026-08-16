@@ -11,36 +11,46 @@
       </h2>
 
       <% group.each do |member| %>
+
         <p>
           <%= member["name"] %>
         </p>
+
       <% end %>
 
     </div>
 
   <% end %>
 
+
   <div class="result-menu">
 
-    <!-- 2回目以降だけ履歴を表示 -->
+    <!-- 2回目以降 -->
     <% if @draw_count >= 2 %>
+
       <button type="button">
         履歴
       </button>
+
     <% end %>
+
 
     <!-- 次の組み分け -->
     <%= button_to "組み分けをつづける",
                   kumiwake_draw_path,
                   method: :post %>
 
-    <!-- 未実装 -->
+
+    <!-- CSV -->
     <button type="button">
       CSVエクスポート（未実装）
     </button>
 
-    <!-- 今は仮でHOMEへ -->
-    <%= link_to "終わる", kumiwake_path %>
+
+    <!-- 終わる -->
+    <%= button_to "終わる",
+                  "/kumiwake/finish",
+                  method: :post %>
 
   </div>
 

@@ -6,23 +6,23 @@ class GroupAllocator
   end
 
   def call
-    best_groups = nil
-    best_score = -1
-
     1000.times do
       groups = make_random_groups
       score = calculate_score(groups)
 
-      if score > best_score
-        best_score = score
-        best_groups = groups
-      end
-
-      # 今回の組み合わせがすべて新しいなら終了
-      break if score == total_pairs_per_round
+      # 今回の組み合わせがすべて新しいなら採用
+      return groups if score == total_pairs_per_round
     end
 
-    best_groups
+    # 完全に新しい組み合わせを作れなかった
+    nil
+  end
+
+  # 全員のペアをすでに経験しているか
+  def all_pairs_used?
+    all_pairs.all? do |pair|
+      @history.include?(pair)
+    end
   end
 
   private
@@ -73,6 +73,13 @@ class GroupAllocator
 
     Array.new(@group_count) do |i|
       base_size + (i < remainder ? 1 : 0)
+    end
+  end
+
+   # 全メンバーの組み合わせ
+  def all_pairs
+    @members.combination(2).map do |member_a, member_b|
+      [member_a["id"], member_b["id"]].sort
     end
   end
 end

@@ -1,8 +1,8 @@
 /* ========================================
-   組名入力画面
+   名簿入力画面
 ======================================== */
 
-.kumiwake-group-names {
+.kumiwake-input {
   width: 100vw;
   height: 100vh;
 
@@ -12,7 +12,7 @@
 
   overflow: hidden;
 
-  background-image: url("/assets/kumiwake-background.png");
+  background-image: url("<%= asset_path('kumiwake-background.png') %>");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -21,12 +21,11 @@
   font-family: "Courier New", monospace;
 }
 
-
 /* ========================================
-   羊皮紙パネル
+   名簿入力パネル
 ======================================== */
 
-.kumiwake-group-names-panel {
+.kumiwake-input-panel {
   position: relative;
 
   width: min(75vw, 500px);
@@ -42,21 +41,20 @@
 
   box-shadow: none;
 
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
-
 /* ========================================
-   羊皮紙背景
+   パネル内の背景画像
 ======================================== */
 
-.kumiwake-group-names-panel::before {
+.kumiwake-input-panel::before {
   content: "";
 
   position: absolute;
   inset: 0;
 
-  background-image: url("/assets/input-background.png");
+  background-image: url("<%= asset_path('input-background.png') %>");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -66,12 +64,11 @@
   z-index: 0;
 }
 
-
 /* ========================================
-   内容を背景より前へ
+   背景画像より内容を前に出す
 ======================================== */
 
-.kumiwake-group-names-panel > * {
+.kumiwake-input-panel > * {
   position: relative;
 
   z-index: 1;
@@ -82,7 +79,7 @@
    タイトル
 ======================================== */
 
-.kumiwake-group-names-panel h2 {
+.kumiwake-input-panel h2 {
   margin: 0 0 10px;
 
   text-align: center;
@@ -97,44 +94,36 @@
    説明文
 ======================================== */
 
-.group-name-description,
-.group-name-limit {
-  margin: 0;
+.input-message {
+  margin: 0 0 20px;
 
   text-align: center;
 
-  font-size: 17px;
+  font-size: 18px;
 
   line-height: 1.6;
 
   color: #222;
 }
 
-.group-name-description {
-  margin-bottom: 4px;
-}
-
-.group-name-limit {
-  margin-bottom: 20px;
-
-  font-size: 15px;
-}
-
 
 /* ========================================
-   組名入力エリア
+   名前入力欄
 ======================================== */
 
-.group-name-list {
-  display: flex;
+.name-inputs {
+  width: 100%;
+}
 
+.name-input-list {
+  display: flex;
   flex-direction: column;
 
-  gap: 12px;
+  gap: 9px;
 
   width: 100%;
 
-  height: 360px;
+  height: 410px;
 
   overflow-y: auto;
 
@@ -142,16 +131,15 @@
 
   box-sizing: border-box;
 
+   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: rgba(60, 40, 20, 0.35) transparent;
+
 }
 
+/* 1つの入力欄 */
 
-/* ========================================
-   1つの組名入力行
-======================================== */
-
-.group-name-row {
+.name-input-row {
   display: flex;
 
   align-items: center;
@@ -163,12 +151,9 @@
   margin: 0 auto;
 }
 
+/* 番号 */
 
-/* ========================================
-   番号
-======================================== */
-
-.group-name-row span {
+.name-input-row span {
   width: 35px;
 
   flex-shrink: 0;
@@ -181,11 +166,9 @@
 }
 
 
-/* ========================================
-   組名入力欄
-======================================== */
+/* 名前入力 */
 
-.group-name-row input {
+.name-input-row input {
   flex: 1;
 
   width: 100%;
@@ -198,24 +181,19 @@
   background: transparent;
 
   border: none;
-
   border-bottom: 1px solid rgba(60, 40, 20, 0.6);
-
   border-radius: 0;
 
   color: #222;
 
   font-family: "Courier New", monospace;
-
   font-size: 15px;
 
   outline: none;
 }
 
 
-/* フォーカス時 */
-
-.group-name-row input:focus {
+.name-input-row input:focus {
   background: transparent;
 
   border-bottom-color: #222;
@@ -225,37 +203,26 @@
 
 
 /* ========================================
-   ＋ − ボタン
+   下部ボタン
 ======================================== */
 
-.group-name-submit {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-
-/* ========================================
-   ＋ − 決定ボタン
-======================================== */
-
-.group-name-controls {
+.input-buttons {
   display: flex;
 
   justify-content: center;
 
-  align-items: center;
-
-  gap: 20px;
+  gap: 30px;
 
   margin-top: 20px;
+
+  transform: translateX(-30px);
 }
 
 
 /* 共通ボタン */
 
-.group-name-controls button {
-  padding: 9px 16px;
+.input-buttons button {
+  padding: 10px 15px;
 
   background: transparent;
 
@@ -273,92 +240,40 @@
 }
 
 
-/* ＋ − ボタン */
+/* マウスを乗せたとき */
 
-.group-name-controls button:first-child,
-.group-name-controls button:nth-child(2) {
-  width: 42px;
-
-  padding: 8px 0;
-
-  font-size: 20px;
-}
-
-
-/* ホバー */
-
-.group-name-controls button:hover {
+.input-buttons button:hover {
   background: rgba(255, 255, 255, 0.12);
 }
 
 
 /* ========================================
-   決定ボタン
+   以下　スマートフォン用配置
 ======================================== */
-
-.group-name-submit {
-  display: flex;
-
-  justify-content: center;
-
-  margin-top: 20px;
-}
-
-
-.group-name-submit button {
-  padding: 10px 25px;
-
-  background: transparent;
-
-  border: 2px solid #222;
-
-  border-radius: 3px;
-
-  color: #222;
-
-  font-family: "Courier New", monospace;
-
-  font-size: 15px;
-
-  cursor: pointer;
-}
-
-
-.group-name-submit button:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-
-/* ========================================
-   スマートフォン
-======================================== */
-
 @media (max-width: 700px) {
 
   /* ========================================
      パネル
   ======================================== */
 
-  .kumiwake-group-names-panel {
+  .kumiwake-input-panel {
     width: 95%;
-
     height: 80%;
 
     padding: 110px 30px 25px;
 
     box-sizing: border-box;
+    
   }
 
 
   /* ========================================
-     羊皮紙
+     羊皮紙の背景
   ======================================== */
 
-  .kumiwake-group-names-panel::before {
+  .kumiwake-input-panel::before {
     background-size: contain;
-
     background-position: center;
-
     background-repeat: no-repeat;
   }
 
@@ -367,7 +282,7 @@
      タイトル
   ======================================== */
 
-  .kumiwake-group-names-panel h2 {
+  .kumiwake-input-panel h2 {
     font-size: 22px;
 
     margin-bottom: 6px;
@@ -378,30 +293,21 @@
      説明文
   ======================================== */
 
-  .group-name-description {
+  .input-message {
     font-size: 14px;
-
-    margin-bottom: 4px;
-  }
-
-
-  .group-name-limit {
-    font-size: 13px;
 
     margin-bottom: 10px;
   }
 
 
   /* ========================================
-     組名入力エリア
+     名前入力エリア
   ======================================== */
 
-  .group-name-list {
+  .name-input-list {
     width: 100%;
 
     height: 350px;
-
-    gap: 9px;
 
     overflow-y: auto;
 
@@ -410,10 +316,10 @@
 
 
   /* ========================================
-     入力行
+     名前入力行
   ======================================== */
 
-  .group-name-row {
+  .name-input-row {
     width: 85%;
 
     margin: 0 auto;
@@ -422,14 +328,14 @@
   }
 
 
-  .group-name-row span {
+  .name-input-row span {
     width: 25px;
 
     font-size: 13px;
   }
 
 
-  .group-name-row input {
+  .name-input-row input {
     font-size: 13px;
 
     padding: 5px 6px;
@@ -437,32 +343,197 @@
 
 
   /* ========================================
-     ＋ −
+     ボタン
   ======================================== */
 
- @media (max-width: 700px) {
+  .input-buttons {
+    display: flex;
 
-  .group-name-controls {
+    flex-direction: row;
+
+    justify-content: center;
+
+    align-items: center;
+
     gap: 12px;
 
-    margin-top: 10px;
+    margin-top: 1px;
+
+    transform: none;
   }
 
-  .group-name-controls button {
-    padding: 7px 12px;
+
+  .input-buttons button {
+    width: auto;
+
+    min-width: 80px;
+
+    padding: 7px 9px;
 
     font-size: 13px;
   }
 
-  .group-name-controls button:first-child,
-  .group-name-controls button:nth-child(2) {
-    width: 36px;
+.group-count-input {
+  display: flex;
 
-    padding: 6px 0;
+  flex-direction: column;
 
-    font-size: 18px;
-  }
+  align-items: center;
 
+  gap: 15px;
+
+  color: #222;
 }
 
+
+.group-count-description {
+  margin: 0;
+
+  font-size: 20px !important;
+
+  text-align: center;
+
+  line-height: 1.6;
+}
+
+#group-count-value {
+  width: 140px;
+
+  padding: 10px;
+
+  box-sizing: border-box;
+
+  background: transparent;
+
+  border: 1px solid #555;
+
+  border-radius: 3px;
+
+  color: #222;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 22px;
+
+  text-align: center;
+}
+
+.group-count-submit {
+  padding: 10px 30px;
+
+  background: transparent;
+
+  border: 1px solid #555;
+
+  border-radius: 3px;
+
+  color: #222;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 18px;
+
+  cursor: pointer;
+}
+
+/* ========================================
+   組名入力
+======================================== */
+
+.group-name-input {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  color: #222;
+}
+
+.group-name-description {
+  margin: 0 0 15px;
+
+  text-align: center;
+
+  font-size: 16px;
+}
+
+.group-name-list {
+  width: 80%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  overflow-y: auto;
+}
+
+.group-name-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+.group-name-row span {
+  width: 25px;
+
+  text-align: right;
+
+  font-size: 16px;
+}
+
+.group-name-row input {
+  flex: 1;
+
+  padding: 8px;
+
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.25);
+
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+
+  color: #222;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 18px;
+
+  outline: none;
+}
+
+.group-name-row input::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.group-name-row input:focus {
+  border-bottom-color: #222;
+}
+
+.group-name-submit {
+  margin-top: 15px;
+
+  padding: 8px 25px;
+
+  background: transparent;
+
+  border: 1px solid #555;
+
+  border-radius: 3px;
+
+  color: #222;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
 }

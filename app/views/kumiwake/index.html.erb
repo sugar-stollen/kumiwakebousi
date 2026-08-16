@@ -1,35 +1,40 @@
 <div class="kumiwake">
+
   <main class="home-screen" data-controller="kumiwake">
 
-  <!-- 帽子 -->
-  <div class="hat-area">
-    <div class="hat-image"></div>
-  </div>
+    <!-- 帽子 -->
+    <div class="hat-area">
+      <div class="hat-image"></div>
+    </div>
 
-  <!-- 下部コマンドエリア -->
-  <div class="command-area">
+    <!-- 下部コマンドエリア -->
+    <div class="command-area">
 
-    <!-- セリフ -->
-  <div
-    class="message-box"
-    data-action="click->kumiwake#nextMessage">
+      <!-- セリフ -->
+      <div
+        class="message-box"
+        data-action="click->kumiwake#nextMessage">
 
-  <p
-    data-kumiwake-target="message"
-    data-names-count="<%= @names.length %>"
-    data-from-input="<%= @from_name_input %>"
-    data-from-group-name-input="<%= @from_group_name_input %>">
-    
-  </p>
+        <p
+          data-kumiwake-target="message"
+          data-names-count="<%= @names.length %>"
+          data-from-input="<%= @from_name_input %>"
+          data-from-group-name-input="<%= @from_group_name_input %>"
+          data-limit-reached="<%= @kumiwake_limit_reached %>"
+          data-magic-mode="<%= @magic_mode %>"
+          data-magic-max-rounds="<%= @magic_max_rounds %>">
+        </p>
 
-  </div>
+      </div>
 
-  <!-- 選択肢 -->
-  <div
-    class="menu-box"
-    data-kumiwake-target="menu">
-  </div>
+      <!-- 選択肢 -->
+      <div
+        class="menu-box"
+        data-kumiwake-target="menu">
+      </div>
 
-</div>
+    </div>
+
+  </main>
 
 </div>

@@ -21,6 +21,18 @@ Rails.application.routes.draw do
       to: "kumiwake#result",
       as: :kumiwake_result
 
+  post "kumiwake/draw",
+     to: "kumiwake#draw",
+     as: :kumiwake_draw
+     
+  post "kumiwake/continue_normal",
+     to: "kumiwake#continue_normal",
+     as: :kumiwake_continue_normal
+
+  post "kumiwake/finish",
+     to: "kumiwake#finish",
+     as: :kumiwake_finish
+     
   get 'home/index'
 
   get "up" => "rails/health#show",

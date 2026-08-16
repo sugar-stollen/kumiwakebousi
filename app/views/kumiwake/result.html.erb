@@ -1,56 +1,69 @@
 <div class="kumiwake-result">
 
-  <h1>組み分け結果</h1>
+  <div class="kumiwake-result-panel">
 
-  <% @groups.each_with_index do |group, index| %>
+    <h1>組み分け結果</h1>
 
-    <div class="group-result">
+    <!-- 組み分け結果だけスクロールする部分 -->
+    <div class="group-results-scroll">
 
-      <h2>
-        <%= @group_names[index] %>
-      </h2>
+      <% @groups.each_with_index do |group, index| %>
 
-      <% group.each do |member| %>
+        <div class="group-result">
 
-        <p>
-          <%= member["name"] %>
-        </p>
+          <h2>
+            <%= @group_names[index] %>
+          </h2>
+
+          <% group.each do |member| %>
+            <p>
+              <%= member["name"] %>
+            </p>
+          <% end %>
+
+        </div>
 
       <% end %>
 
     </div>
 
-  <% end %>
+    <!-- 下部固定ボタン -->
+    <div class="result-menu">
+
+      <!-- 組み分けを続ける -->
+      <% if @normal_mode %>
+
+        <%= form_with url: kumiwake_draw_path,
+                      method: :post,
+                      local: true do %>
+
+          <%= hidden_field_tag :normal_mode, "true" %>
+
+          <button type="submit">
+            組み分けを続ける
+          </button>
+
+        <% end %>
+
+      <% else %>
+
+        <%= button_to "組み分けを続ける",
+                      kumiwake_draw_path,
+                      method: :post %>
+
+      <% end %>
 
 
-  <div class="result-menu">
+      <!-- 終わる -->
+      <%= link_to "終わる", kumiwake_finish_path, class: "finish-button" %>
+      
 
-    <!-- 2回目以降 -->
-    <% if @draw_count >= 2 %>
-
-      <button type="button">
-        履歴
+      <!-- CSV -->
+      <button type="button" class="csv-button">
+        CSVエクスポート
       </button>
 
-    <% end %>
-
-
-    <!-- 次の組み分け -->
-    <%= button_to "組み分けをつづける",
-                  kumiwake_draw_path,
-                  method: :post %>
-
-
-    <!-- CSV -->
-    <button type="button">
-      CSVエクスポート（未実装）
-    </button>
-
-
-    <!-- 終わる -->
-    <%= button_to "終わる",
-                  "/kumiwake/finish",
-                  method: :post %>
+    </div>
 
   </div>
 

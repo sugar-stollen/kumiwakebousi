@@ -33,6 +33,9 @@ Rails.application.routes.draw do
      to: "kumiwake#finish",
      as: :kumiwake_finish
      
+  get 'kumiwake/finish', 
+    to: 'kumiwake#finish'
+
   get 'home/index'
 
   get "up" => "rails/health#show",

@@ -15,6 +15,22 @@ class KumiwakeController < ApplicationController
     @magic_max_rounds = magic_max_rounds
   end
 
+  # ========================================
+  # 履歴のリセット
+  # ========================================
+
+  def reset_history
+    session.delete(:group_history)
+    session.delete(:current_groups)
+    session.delete(:draw_count)
+    session.delete(:round_number)
+    session.delete(:kumiwake_limit_reached)
+    session.delete(:magic_mode)
+    session.delete(:_switch_complete)
+
+    head :no_content
+  end
+
   def input
   end
 
@@ -87,13 +103,14 @@ class KumiwakeController < ApplicationController
   def draw
     # ========================================
     # 上限後の「続ける」
+    # 最初に処理して確実に状態を切り替える
     # ========================================
     if params[:switch_to_normal] == "true"
       session[:magic_mode] = false
-
-      # 魔法の履歴はここで不要になる
       session.delete(:group_history)
       session.delete(:kumiwake_limit_reached)
+      # 確実に保存
+      session[:_switch_complete] = true
     end
 
     # ========================================
@@ -109,7 +126,8 @@ class KumiwakeController < ApplicationController
 
     magic_mode = session[:magic_mode] == true
 
-    history = session[:group_history] || []
+    # normalモードへ切り替わった場合は魔法の履歴を使わない
+    history = (magic_mode && !session[:_switch_complete]) ? (session[:group_history] || []) : []
 
     # ========================================
     # GroupAllocator
@@ -118,7 +136,7 @@ class KumiwakeController < ApplicationController
     allocator = GroupAllocator.new(
       members: session[:names],
       group_count: session[:group_count],
-      history: magic_mode ? history : []
+      history: history
     )
 
     # ========================================
@@ -172,7 +190,7 @@ class KumiwakeController < ApplicationController
     # 魔法モードだけ履歴を保存
     # ========================================
 
-    if magic_mode
+    if magic_mode && !session[:_switch_complete]
       @groups.each do |group|
         group.combination(2).each do |member_a, member_b|
           pair = [member_a["id"], member_b["id"]].sort
@@ -183,6 +201,9 @@ class KumiwakeController < ApplicationController
 
       session[:group_history] = history
     end
+
+    # normalモード切り替え完了フラグをリセット
+    session.delete(:_switch_complete)
 
     redirect_to kumiwake_result_path
   end
@@ -253,4 +274,5 @@ class KumiwakeController < ApplicationController
 
     total_pairs / pairs_per_round
   end
+
 end

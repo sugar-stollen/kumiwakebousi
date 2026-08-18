@@ -24,6 +24,10 @@ Rails.application.routes.draw do
       to: "kumiwake#result",
       as: :kumiwake_result
 
+  get "kumiwake/history",
+      to: "kumiwake#history",
+      as: :kumiwake_history
+
   post "kumiwake/draw",
      to: "kumiwake#draw",
      as: :kumiwake_draw

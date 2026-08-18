@@ -34,7 +34,7 @@
     <div class="result-menu">
 
       <!-- 組み分けを続ける -->
-      <% if @normal_mode %>
+      <% if !@magic_mode %>
 
         <%= form_with url: kumiwake_draw_path,
                       method: :post,
@@ -60,6 +60,10 @@
       <!-- 終わる -->
       <%= link_to "終わる", kumiwake_finish_path, class: "finish-button" %>
       
+
+      <!-- 履歴 -->
+      <%= link_to "履歴", kumiwake_history_path, class: "history-button" %>
+
 
       <!-- CSV -->
       <button type="button" class="csv-button">

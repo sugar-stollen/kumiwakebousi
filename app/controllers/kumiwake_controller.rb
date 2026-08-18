@@ -24,6 +24,7 @@ class KumiwakeController < ApplicationController
     session.delete(:current_groups)
     session.delete(:draw_count)
     session.delete(:round_number)
+    session.delete(:past_results)
     session.delete(:kumiwake_limit_reached)
     session.delete(:magic_mode)
     session.delete(:_switch_complete)
@@ -54,6 +55,7 @@ class KumiwakeController < ApplicationController
     session.delete(:current_groups)
     session.delete(:draw_count)
     session.delete(:round_number)
+    session.delete(:past_results)
     session.delete(:magic_mode)
     session.delete(:kumiwake_limit_reached)
 
@@ -187,6 +189,18 @@ class KumiwakeController < ApplicationController
     session[:round_number] = session[:draw_count].to_i
 
     # ========================================
+    # 過去の結果を保存（履歴用）
+    # ========================================
+
+    past_results = session[:past_results] || []
+    past_results << {
+      round: session[:round_number],
+      groups: @groups,
+      draw_count: session[:draw_count]
+    }
+    session[:past_results] = past_results
+
+    # ========================================
     # 魔法モードだけ履歴を保存
     # ========================================
 
@@ -230,6 +244,15 @@ class KumiwakeController < ApplicationController
   end
 
   # ========================================
+  # 履歴表示
+  # ========================================
+
+  def history
+    @group_names = session[:group_names]
+    @past_results = session[:past_results] || []
+  end
+
+  # ========================================
   # 組み分けを終了
   # ========================================
 
@@ -238,6 +261,7 @@ class KumiwakeController < ApplicationController
     session.delete(:draw_count)
     session.delete(:round_number)
     session.delete(:current_groups)
+    session.delete(:past_results)
     session.delete(:kumiwake_limit_reached)
     session.delete(:magic_mode)
 

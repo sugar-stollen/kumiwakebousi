@@ -1,8 +1,8 @@
 /* ========================================
-   組み分け結果画面
+   組み分け履歴画面
 ======================================== */
 
-.kumiwake-result {
+.kumiwake-history {
   width: 100vw;
   height: 100vh;
 
@@ -26,7 +26,7 @@
    羊皮紙パネル
 ======================================== */
 
-.kumiwake-result-panel {
+.kumiwake-history-panel {
   position: relative;
 
   width: min(75vw, 500px);
@@ -50,7 +50,7 @@
    羊皮紙背景
 ======================================== */
 
-.kumiwake-result-panel::before {
+.kumiwake-history-panel::before {
   content: "";
 
   position: absolute;
@@ -72,7 +72,7 @@
    内容を背景より前へ
 ======================================== */
 
-.kumiwake-result-panel > * {
+.kumiwake-history-panel > * {
   position: relative;
 
   z-index: 1;
@@ -83,7 +83,7 @@
    タイトル
 ======================================== */
 
-.kumiwake-result-panel h1 {
+.kumiwake-history-panel h1 {
   margin: 5px 0 20px;
 
   text-align: center;
@@ -95,10 +95,10 @@
 
 
 /* ========================================
-   組み分け結果スクロール部分
+   履歴スクロール部分
 ======================================== */
 
-.group-results-scroll {
+.history-scroll {
   width: 100%;
 
   height: 390px;
@@ -115,49 +115,107 @@
 
 
 /* ========================================
-   1つの組
+   履歴がない場合のメッセージ
 ======================================== */
 
-.group-result {
-  width: 85%;
+.no-history {
+  width: 100%;
 
-  margin: 0 auto 25px;
-}
+  height: 100%;
 
-
-/* ========================================
-   組名
-======================================== */
-
-.group-result h2 {
-  margin: 0 0 8px;
-
-  text-align: left;
-
-  font-size: 21px;
-
-  color: #222;
-}
-
-
-/* ========================================
-   名前
-======================================== */
-
-.group-result p {
-  margin: 5px 0;
-
-  padding: 5px 10px 5px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   text-align: center;
 
-  font-size: 18px;
+  font-size: 16px;
 
-  line-height: 1.5;
+  color: #666;
+}
+
+
+/* ========================================
+   1つの履歴アイテム（1回分の結果）
+======================================== */
+
+.history-item {
+  width: 85%;
+
+  margin: 0 auto 20px;
+
+  padding: 10px 10px 15px;
+
+  border: 1px solid rgba(60, 40, 20, 0.2);
+
+  border-radius: 3px;
+
+}
+
+
+/* ========================================
+   履歴アイテムの回数タイトル
+======================================== */
+
+.history-item h2 {
+  margin: 0 0 10px;
+
+  text-align: left;
+
+  font-size: 18px;
 
   color: #222;
 
-  border-bottom: 1px solid rgba(60, 40, 20, 0.25);
+  font-weight: bold;
+}
+
+
+/* ========================================
+   履歴内の組
+======================================== */
+
+.history-group {
+  width: 95%;
+
+  margin: 0 auto 8px;
+}
+
+
+/* ========================================
+   履歴内の組名
+======================================== */
+
+.history-group h3 {
+  margin: 0 0 5px;
+
+  text-align: left;
+
+  font-size: 15px;
+
+  color: #333;
+
+  font-weight: bold;
+}
+
+
+/* ========================================
+   履歴内の名前
+======================================== */
+
+.history-group p {
+  margin: 2px 0;
+
+  padding: 2px 5px 2px 10px;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  line-height: 1.3;
+
+  color: #222;
+
+  border-bottom: 1px solid rgba(60, 40, 20, 0.15);
 }
 
 
@@ -165,49 +223,34 @@
    下部ボタンエリア
 ======================================== */
 
-.result-menu {
+.history-menu {
   position: absolute;
 
-  left: 55%px;
-  right: 70px;
+  left: 45pcx;
+  right: 45px;
   bottom: 85px;
 
   display: grid;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
 
-  gap: 12px 15px;
+  gap: 12px;
 
-  justify-times: stretch;
-  align-items: stretch;
-
-  margin-right: 22%;
+  margin-right: 25%;
 
 }
 
 
 /* ========================================
-   ボタンを入れている form
+   戻るボタン
 ======================================== */
 
-.result-menu form {
-  margin: 0;
-
-  width: 100%;
-}
-
-
-/* ========================================
-   共通ボタン
-======================================== */
-
-.result-menu button,
-.result-menu a {
-  width: 100%;
+.history-menu a {
+   width: 100%;
 
   box-sizing: border-box;
 
-  padding: 9px 5px;
+  padding: 10px 10px;
 
   background: transparent;
 
@@ -219,56 +262,24 @@
 
   font-family: "Courier New", monospace;
 
-  font-size: 13px;
+  font-size: 12px;
 
   text-align: center;
 
   text-decoration: none;
 
   cursor: pointer;
+  
+  justify-content: center;
 }
 
 
 /* ========================================
-   終わるボタン
+   戻るボタンのホバー
 ======================================== */
 
-.result-menu .finish-button {
-  transform: none;
-}
-
-
-/* ========================================
-   履歴ボタン
-======================================== */
-
-.result-menu .history-button {
-  grid-column: auto;
-
-  transform: none;
-}
-
-
-/* ========================================
-   ボタンのホバー
-======================================== */
-
-.result-menu button:hover,
-.result-menu a:hover {
+.history-menu a:hover {
   background: rgba(255, 255, 255, 0.12);
-}
-
-
-/* ========================================
-   CSVボタン
-======================================== */
-
-.result-menu .csv-button {
-  grid-column: auto;
-
-  width: 100%;
-
-  justify-self: stretch;
 }
 
 
@@ -282,7 +293,7 @@
      パネル
   ======================================== */
 
-  .kumiwake-result-panel {
+  .kumiwake-history-panel {
     width: 95%;
 
     height: 80%;
@@ -297,117 +308,37 @@
      羊皮紙
   ======================================== */
 
-  .kumiwake-result-panel::before {
-    background-size: contain;
-
-    background-position: center;
-
-    background-repeat: no-repeat;
+  .kumiwake-history-panel::before {
+    opacity: 0.85;
   }
 
 
   /* ========================================
-     タイトル
+     スクロール部分の高さ
   ======================================== */
 
-  .kumiwake-result-panel h1 {
-    margin: 5px 0 12px;
-
-    font-size: 22px;
+  .history-scroll {
+    height: 350px;
   }
 
 
   /* ========================================
-     結果スクロール部分
+     下部ボタンの位置
   ======================================== */
 
-  .group-results-scroll {
-    width: 100%;
-
-    height: 330px;
-
-    padding: 0 5px 10px;
-
-    overflow-y: auto;
-  }
-
-
-  /* ========================================
-     組
-  ======================================== */
-
-  .group-result {
-    width: 85%;
-
-    margin: 0 auto 20px;
-  }
-
-
-  /* ========================================
-     組名
-  ======================================== */
-
-  .group-result h2 {
-    margin-bottom: 6px;
-
-    font-size: 18px;
-
-    text-align: left;
-  }
-
-
-  /* ========================================
-     名前
-  ======================================== */
-
-  .group-result p {
-    margin: 4px 0;
-
-    padding-left: 12px;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-
-    text-align: left;
-  }
-
-
-  /* ========================================
-     下部ボタン
-  ======================================== */
-
-  .result-menu {
-    left: 30px;
-
+  .history-menu {
+    left: 45px;
     right: 30px;
-
-    bottom: 25px;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 8px 10px;
-  }
-
-
-  .result-menu button,
-  .result-menu a {
-    padding: 7px 5px;
-
-    font-size: 13px;
+    bottom: 55px;
   }
 
 
   /* ========================================
-     CSV
+     戻るボタンの幅
   ======================================== */
 
-  .result-menu .csv-button {
-    grid-column: 1 / 3;
-
-    width: 65%;
-
-    justify-self: center;
+  .history-menu a {
+    width: 70%;
   }
 
 }

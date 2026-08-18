@@ -1,0 +1,64 @@
+<div class="kumiwake-history">
+
+  <div class="kumiwake-history-panel">
+
+    <h1>
+      組み分け履歴
+    </h1>
+
+    <!-- 履歴スクロール部分 -->
+    <div class="history-scroll">
+
+      <% if @past_results.empty? %>
+
+        <p class="no-history">
+          まだ履歴がありません
+        </p>
+
+      <% else %>
+
+        <% @past_results.each do |result| %>
+
+          <div class="history-item">
+
+            <h2>
+              第<%= result["round"] %>回目
+            </h2>
+
+            <% result["groups"].each_with_index do |group, index| %>
+
+              <div class="history-group">
+
+                <h3>
+                  <%= @group_names[index] %>
+                </h3>
+
+                <% group.each do |member| %>
+                  <p>
+                    <%= member["name"] %>
+                  </p>
+                <% end %>
+
+              </div>
+
+            <% end %>
+
+          </div>
+
+        <% end %>
+
+      <% end %>
+
+    </div>
+
+    <!-- 下部固定ボタン -->
+    <div class="history-menu">
+
+      <!-- 戻る -->
+      <%= link_to "戻る", kumiwake_result_path, class: "back-button" %>
+
+    </div>
+
+  </div>
+
+</div>

@@ -81,6 +81,7 @@ export default class extends Controller {
 
     form.method = "POST"
     form.action = "/kumiwake/draw"
+    form.dataset.turbo = "false"
 
     const csrfToken = document.querySelector(
       'meta[name="csrf-token"]'
@@ -129,6 +130,7 @@ export default class extends Controller {
 
     form.method = "POST"
     form.action = "/kumiwake/reset_history"
+    form.dataset.turbo = "false"
 
     const csrfToken = document.querySelector(
       'meta[name="csrf-token"]'
@@ -703,6 +705,7 @@ export default class extends Controller {
 
     form.method = "POST"
     form.action = "/kumiwake/draw"
+    form.dataset.turbo = "false"
 
     const csrfToken = document.querySelector(
       'meta[name="csrf-token"]'

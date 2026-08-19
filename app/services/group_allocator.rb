@@ -6,16 +6,24 @@ class GroupAllocator
   end
 
   def call
+    best_groups = nil
+    best_score = -1
+
     1000.times do
       groups = make_random_groups
       score = calculate_score(groups)
+
+      if score > best_score
+        best_score = score
+        best_groups = groups
+      end
 
       # 今回の組み合わせがすべて新しいなら採用
       return groups if score == total_pairs_per_round
     end
 
-    # 完全に新しい組み合わせを作れなかった
-    nil
+    # 完全に新しい組み合わせが作れなくても、最も新しい組み合わせを返す
+    best_groups
   end
 
   # 全員のペアをすでに経験しているか

@@ -30,7 +30,7 @@
               <div class="history-group">
 
                 <h3>
-                  <%= @group_names[index] %>
+                  <%= @group_names[index] || "未設定" %>
                 </h3>
 
                 <% group.each do |member| %>
@@ -55,7 +55,9 @@
     <div class="history-menu">
 
       <!-- 戻る -->
-      <%= link_to "戻る", kumiwake_result_path, class: "back-button" %>
+      <%= link_to "戻る", kumiwake_result_path,
+          class: "back-button",
+          data: { turbo: false } %>
 
     </div>
 

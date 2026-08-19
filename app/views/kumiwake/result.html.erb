@@ -38,9 +38,11 @@
 
         <%= form_with url: kumiwake_draw_path,
                       method: :post,
-                      local: true do %>
+                      local: true,
+                      data: { turbo: false } do %>
 
-          <%= hidden_field_tag :normal_mode, "true" %>
+          <%= hidden_field_tag :switch_to_normal, "true" %>
+          <%= hidden_field_tag :magic_mode, "false" %>
 
           <button type="submit">
             組み分けを続ける
@@ -52,7 +54,8 @@
 
         <%= button_to "組み分けを続ける",
                       kumiwake_draw_path,
-                      method: :post %>
+                      method: :post,
+                      form: { data: { turbo: false } } %>
 
       <% end %>
 
@@ -61,9 +64,12 @@
       <%= link_to "終わる", kumiwake_finish_path, class: "finish-button" %>
       
 
-      <!-- 履歴 -->
-      <%= link_to "履歴", kumiwake_history_path, class: "history-button" %>
-
+      <% if @show_history_button %>
+        <!-- 履歴 -->
+        <%= link_to "履歴", kumiwake_history_path,
+              class: "history-button",
+              data: { turbo: false } %>
+      <% end %>
 
       <!-- CSV -->
       <button type="button" class="csv-button">

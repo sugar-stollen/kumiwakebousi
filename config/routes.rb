@@ -9,6 +9,9 @@ Rails.application.routes.draw do
        to: "kumiwake#save_names",
        as: :kumiwake_save_names
 
+  post "kumiwake/reset_history", 
+       to: "kumiwake#reset_history"
+
   get "kumiwake/group_names",
       to: "kumiwake#group_names",
       as: :kumiwake_group_names
@@ -20,6 +23,10 @@ Rails.application.routes.draw do
   get "kumiwake/result",
       to: "kumiwake#result",
       as: :kumiwake_result
+
+  get "kumiwake/history",
+      to: "kumiwake#history",
+      as: :kumiwake_history
 
   post "kumiwake/draw",
      to: "kumiwake#draw",
@@ -42,4 +49,5 @@ Rails.application.routes.draw do
       as: :rails_health_check
 
   root "home#index"
+
 end

@@ -81,6 +81,7 @@ export default class extends Controller {
 
     form.method = "POST"
     form.action = "/kumiwake/draw"
+    form.dataset.turbo = "false"
 
     const csrfToken = document.querySelector(
       'meta[name="csrf-token"]'
@@ -108,18 +109,45 @@ export default class extends Controller {
 
 
   // ========================================
-  // 最初の会話
+  // 最初の会話 リセット付き
   // ========================================
 
-  startInitial() {
-    this.currentStep = "initial-1"
+    startInitial() {
+      this.resetHistory()
 
-    this.showMessage(
-      "では組み分けをはじめるぞ"
-    )
+      this.currentStep = "initial-1"
+
+      this.showMessage(
+        "では組み分けをはじめるぞ"
+      )
+    }
+// ========================================
+// ２周目以降の組み分け開始時に履歴をリセット用
+// ========================================
+
+  resetHistory() {
+    const form = document.createElement("form")
+
+    form.method = "POST"
+    form.action = "/kumiwake/reset_history"
+    form.dataset.turbo = "false"
+
+    const csrfToken = document.querySelector(
+      'meta[name="csrf-token"]'
+    ).content
+
+    const csrfInput = document.createElement("input")
+
+    csrfInput.type = "hidden"
+    csrfInput.name = "authenticity_token"
+    csrfInput.value = csrfToken
+
+    form.appendChild(csrfInput)
+
+    document.body.appendChild(form)
+
+    form.submit()
   }
-
-
   // ========================================
   // 名簿入力から戻ってきた場合
   // ========================================
@@ -677,6 +705,7 @@ export default class extends Controller {
 
     form.method = "POST"
     form.action = "/kumiwake/draw"
+    form.dataset.turbo = "false"
 
     const csrfToken = document.querySelector(
       'meta[name="csrf-token"]'
@@ -694,8 +723,16 @@ export default class extends Controller {
     switchInput.name = "switch_to_normal"
     switchInput.value = "true"
 
+    // 明示的に normal モード（魔法なし）を指定
+    const modeInput = document.createElement("input")
+
+    modeInput.type = "hidden"
+    modeInput.name = "magic_mode"
+    modeInput.value = "false"
+
     form.appendChild(csrfInput)
     form.appendChild(switchInput)
+    form.appendChild(modeInput)
 
     document.body.appendChild(form)
 

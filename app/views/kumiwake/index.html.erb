@@ -26,7 +26,13 @@
         </p>
 
       </div>
-
+      <input
+        type="file"
+        accept=".csv"
+        hidden
+        data-kumiwake-target="csvFileInput"
+        data-action="change->kumiwake#importCsvFile">
+        
       <!-- 選択肢 -->
       <div
         class="menu-box"

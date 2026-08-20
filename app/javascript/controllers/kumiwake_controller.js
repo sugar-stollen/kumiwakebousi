@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["message", "menu"]
+  static targets = ["message", "menu", "csvFileInput"]
 
   connect() {
     this.menuTarget.innerHTML = ""
@@ -460,7 +460,14 @@ export default class extends Controller {
   // ========================================
   // 最初のメニュー
   // ========================================
+  // ========================================
+  // CSVインポート
+  // ========================================
 
+  importCsv() {
+    this.csvFileInputTarget.click()
+  }
+  
   showMenu() {
 
     this.menuTarget.innerHTML = `
@@ -474,18 +481,54 @@ export default class extends Controller {
 
       </button>
 
+        <button
+          class="menu-item"
+          data-action="click->kumiwake#importCsv">
 
-      <button
-        class="menu-item">
+          <span class="cursor">▶</span>
+          CSVからインポート
 
-        <span class="cursor">▶</span>
-        CSVからインポート（未実装）
-
-      </button>
+        </button>
 
     `
   }
 
+    // ========================================
+    // CSVファイル選択
+    // ========================================
+
+    importCsvFile(event) {
+      const file = event.target.files[0]
+
+      if (!file) {
+        return
+      }
+
+      const form = document.createElement("form")
+
+      form.method = "POST"
+      form.action = "/csv/import"
+      form.enctype = "multipart/form-data"
+      form.dataset.turbo = "false"
+
+      const csrfToken = document.querySelector(
+        'meta[name="csrf-token"]'
+      ).content
+
+      const csrfInput = document.createElement("input")
+
+      csrfInput.type = "hidden"
+      csrfInput.name = "authenticity_token"
+      csrfInput.value = csrfToken
+
+      event.target.name = "file"
+
+      form.appendChild(csrfInput)
+      form.appendChild(event.target)
+      document.body.appendChild(form)
+
+      form.submit()
+    }
 
   // ========================================
   // 人数確認

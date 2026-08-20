@@ -50,4 +50,12 @@ Rails.application.routes.draw do
 
   root "home#index"
 
+  post "csv/import", 
+    to: "csv#import", 
+    as: :csv_import
+
+    get "csv/export",
+        to: "csv#export",
+        as: :csv_export
+
 end

@@ -1,9 +1,26 @@
 require "test_helper"
+require "tempfile"
 
 class KumiwakeControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get "/kumiwake"
     assert_response :success
+  end
+
+  test "imports names from a CSV file" do
+    file = Tempfile.new(["names", ".csv"])
+    file.write("名前\n太郎\n次郎\n")
+    file.close
+
+    post "/csv/import", params: {
+      file: Rack::Test::UploadedFile.new(file.path, "text/csv")
+    }
+
+    assert_redirected_to "/kumiwake"
+    assert_equal ["太郎", "次郎"], session[:names].map { |name| name["name"] }
+    assert_equal true, session[:from_name_input]
+  ensure
+    file&.unlink
   end
 
   test "result page shows round number in magic mode and after continuing normally" do

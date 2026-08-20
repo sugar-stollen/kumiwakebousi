@@ -99,6 +99,7 @@ class KumiwakeController < ApplicationController
     if params[:switch_to_normal] == "true" || params[:normal_mode] == "true" || params[:magic_mode] == "false"
       session[:magic_mode] = false
       session.delete(:group_history)
+      session.delete(:past_results)
       session.delete(:kumiwake_limit_reached)
       session[:_switch_complete] = true
     end
@@ -117,7 +118,11 @@ class KumiwakeController < ApplicationController
     magic_mode = session[:magic_mode] == true
 
     # normalモードへ切り替わった場合は魔法の履歴を使わない
-    history = (magic_mode && !session[:_switch_complete]) ? (session[:group_history] || []) : []
+    history = if magic_mode && !session[:_switch_complete]
+                restore_history(session[:group_history])
+              else
+                []
+              end
 
     # ========================================
     # GroupAllocator
@@ -170,7 +175,7 @@ class KumiwakeController < ApplicationController
     # 現在の結果を保存
     # ========================================
 
-    session[:current_groups] = @groups
+    session[:current_groups] = compact_groups(@groups)
 
     # ========================================
     # 抽選回数
@@ -187,7 +192,7 @@ class KumiwakeController < ApplicationController
       past_results = session[:past_results] || []
       past_results << {
         round: session[:round_number],
-        groups: @groups,
+        groups: compact_groups(@groups),
         draw_count: session[:draw_count]
       }
       session[:past_results] = past_results
@@ -206,7 +211,7 @@ class KumiwakeController < ApplicationController
         end
       end
 
-      session[:group_history] = history
+      session[:group_history] = compact_history(history)
     end
 
     # normalモード切り替え完了フラグをリセット
@@ -221,7 +226,8 @@ class KumiwakeController < ApplicationController
 
   def result
     last_result = Array(session[:past_results]).compact.last
-    @groups = session[:current_groups] || last_result&.dig("groups") || last_result&.dig(:groups)
+    stored_groups = session[:current_groups] || last_result&.dig("groups") || last_result&.dig(:groups)
+    @groups = restore_groups(stored_groups)
 
     # 結果がない場合
     unless @groups
@@ -251,7 +257,7 @@ class KumiwakeController < ApplicationController
 
       {
         "round" => result["round"] || result[:round],
-        "groups" => Array(result["groups"] || result[:groups]),
+        "groups" => restore_groups(result["groups"] || result[:groups]),
         "draw_count" => result["draw_count"] || result[:draw_count]
       }
     end
@@ -267,6 +273,45 @@ class KumiwakeController < ApplicationController
   end
 
   private
+
+  def compact_groups(groups)
+    groups.map do |group|
+      group.map { |member| member["id"] || member[:id] }
+    end
+  end
+
+  def restore_groups(groups)
+    return nil if groups.nil?
+
+    members_by_id = Array(session[:names]).each_with_object({}) do |member, members|
+      id = member["id"] || member[:id]
+      members[id.to_i] = member
+    end
+
+    Array(groups).map do |group|
+      Array(group).filter_map do |member|
+        if member.is_a?(Hash)
+          member
+        else
+          members_by_id[member.to_i]
+        end
+      end
+    end
+  end
+
+  def compact_history(history)
+    history.map { |member_a, member_b| "#{member_a}:#{member_b}" }
+  end
+
+  def restore_history(history)
+    Array(history).filter_map do |pair|
+      if pair.is_a?(Array)
+        pair.map(&:to_i)
+      elsif pair.is_a?(String)
+        pair.split(":", 2).map(&:to_i) if pair.include?(":")
+      end
+    end
+  end
 
   def clear_round_state
     session.delete(:group_history)

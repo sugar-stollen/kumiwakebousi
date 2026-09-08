@@ -232,7 +232,7 @@ skip() {
 
     // 少し待ってから組み分けページへ移動
     setTimeout(() => {
-      window.location.href = "/kumiwake"
+      window.location.href = "/kumiwake?new=true"
     }, 2000)
   }
 

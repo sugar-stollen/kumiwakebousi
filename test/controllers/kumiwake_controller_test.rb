@@ -7,6 +7,20 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "starting from home clears the previous limit state" do
+    session[:magic_mode] = true
+    session[:kumiwake_limit_reached] = true
+    session[:group_history] = ["1:2"]
+
+    get "/kumiwake", params: { new: "true" }
+
+    assert_response :success
+    assert_nil session[:kumiwake_limit_reached]
+    assert_nil session[:magic_mode]
+    assert_nil session[:group_history]
+    assert_select "p[data-limit-reached='']"
+  end
+
   test "imports names from a CSV file" do
     file = Tempfile.new(["names", ".csv"])
     file.write("名前\n太郎\n次郎\n")

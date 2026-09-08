@@ -1,5 +1,7 @@
 class KumiwakeController < ApplicationController
   def index
+    clear_round_state if params[:new] == "true"
+
     @names = session[:names] || []
 
     @from_name_input = session.delete(:from_name_input)

@@ -589,7 +589,7 @@ export default class extends Controller {
   // ========================================
 
   confirmNo() {
-    window.location.href = "/kumiwake/input"
+    this.showMenu()
   }
 
 

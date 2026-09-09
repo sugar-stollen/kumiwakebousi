@@ -246,24 +246,9 @@ HTML＋JavaScriptで作られたWebツール
 
 ここからは、開発中の仕様・実装内容・検討事項を記録しています。
 
-アプリの画面遷移図は手書きのため、省略
-[Splash]
-    ↓
-[HOME]
-    ↓
-[名簿作成]
-    ↓
-[組数入力]
-    ↓
-[組み分け設定]
-    ↓
-[組み分け演出]
-    ↓
-[結果]
-    ↓
-[HOME]
+## 画面遷移図
 
-今後HOMEから分岐し機能を追加していく
+Figma：<https://www.figma.com/design/7y2pshmL6fXW6KfxUhqbaJ/%E7%B5%84%E3%81%BF%E5%88%86%E3%81%91%E3%81%BC%E3%81%86%E3%81%97%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=6s6iK1ZF73GAWeh5-1>
 
 使用技術は基本的にRailsで、cssとjsをメインにする
 今回はReactは使わないこととする。

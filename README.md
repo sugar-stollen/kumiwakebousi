@@ -250,6 +250,10 @@ HTML＋JavaScriptで作られたWebツール
 
 Figma：<https://www.figma.com/design/7y2pshmL6fXW6KfxUhqbaJ/%E7%B5%84%E3%81%BF%E5%88%86%E3%81%91%E3%81%BC%E3%81%86%E3%81%97%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=6s6iK1ZF73GAWeh5-1>
 
+## ER図
+
+<https://gyazo.com/0903b5811a3b77d4308c0391df9d5136>
+
 使用技術は基本的にRailsで、cssとjsをメインにする
 今回はReactは使わないこととする。
 SNSのような頻回な画面切り替えはないアプリのため、Reactをいれると

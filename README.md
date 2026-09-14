@@ -254,6 +254,18 @@ Figma：<https://www.figma.com/design/7y2pshmL6fXW6KfxUhqbaJ/%E7%B5%84%E3%81%BF%
 
 <https://gyazo.com/0903b5811a3b77d4308c0391df9d5136>
 
+## セッションデータ構造
+
+組み分け中のデータはRails Sessionに一時保存しています。
+
+| セッションキー | 内容 |
+| --- | --- |
+| `session[:names]` | 手入力またはCSVインポートした名簿。CSVの「名前」列（または先頭列）を `{ "id" => 番号, "name" => 名前 }` の配列へ変換して保存 |
+| `session[:group_names]` | グループ名の配列 |
+| `session[:draw_count]` | セッション全体の組み分け回数 |
+| `session[:past_results]` | 組み分け履歴の配列。各要素に `round`、`round_draw_count`、`groups` を保存 |
+| `session[:avoid_repeat_mode]` | 組み分け防止モードの有効状態 |
+
 使用技術は基本的にRailsで、cssとjsをメインにする
 今回はReactは使わないこととする。
 SNSのような頻回な画面切り替えはないアプリのため、Reactをいれると

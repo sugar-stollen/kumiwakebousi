@@ -79,7 +79,7 @@ class CsvController < ApplicationController
     session.delete(:round_number)
     session.delete(:past_results)
     session.delete(:kumiwake_limit_reached)
-    session.delete(:magic_mode)
+    session.delete(:avoid_repeat_mode)
     session.delete(:_switch_complete)
   end
 end

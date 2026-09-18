@@ -34,7 +34,7 @@
     <div class="result-menu">
 
       <!-- 組み分けを続ける -->
-      <% if !@magic_mode %>
+      <% if !@avoid_repeat_mode %>
 
         <%= form_with url: kumiwake_draw_path,
                       method: :post,
@@ -42,7 +42,7 @@
                       data: { turbo: false } do %>
 
           <%= hidden_field_tag :switch_to_normal, "true" %>
-          <%= hidden_field_tag :magic_mode, "false" %>
+          <%= hidden_field_tag :avoid_repeat_mode, "false" %>
 
           <button type="submit">
             組み分けを続ける

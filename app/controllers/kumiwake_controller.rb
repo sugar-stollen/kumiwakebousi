@@ -1,4 +1,6 @@
 class KumiwakeController < ApplicationController
+  before_action :migrate_legacy_mode_key
+
   def index
     clear_round_state if params[:new] == "true"
 
@@ -12,7 +14,7 @@ class KumiwakeController < ApplicationController
     @kumiwake_limit_reached = session[:kumiwake_limit_reached]
 
     # 現在のモード
-    @magic_mode = session[:magic_mode]
+    @avoid_repeat_mode = session[:avoid_repeat_mode]
 
     # 魔法の理論上限回数
     @magic_max_rounds = magic_max_rounds
@@ -98,8 +100,8 @@ class KumiwakeController < ApplicationController
     # 上限後の「続ける」
     # ここは最優先で通常モードへ切り替える
     # ========================================
-    if params[:switch_to_normal] == "true" || params[:normal_mode] == "true" || params[:magic_mode] == "false"
-      session[:magic_mode] = false
+    if params[:switch_to_normal] == "true" || params[:normal_mode] == "true" || params[:avoid_repeat_mode] == "false"
+      session[:avoid_repeat_mode] = false
       session.delete(:group_history)
       session.delete(:past_results)
       session.delete(:kumiwake_limit_reached)
@@ -110,17 +112,17 @@ class KumiwakeController < ApplicationController
     # 最初の抽選時だけモードを保存
     # ========================================
     #
-    # session[:magic_mode] がまだ存在しない場合だけ
-    # JSから送られてきた magic_mode を採用する
+    # session[:avoid_repeat_mode] がまだ存在しない場合だけ
+    # JSから送られてきた avoid_repeat_mode を採用する
     #
-    if session[:magic_mode].nil? && params[:magic_mode].present?
-      session[:magic_mode] = params[:magic_mode] == "true"
+    if session[:avoid_repeat_mode].nil? && params[:avoid_repeat_mode].present?
+      session[:avoid_repeat_mode] = params[:avoid_repeat_mode] == "true"
     end
 
-    magic_mode = session[:magic_mode] == true
+    avoid_repeat_mode = session[:avoid_repeat_mode] == true
 
     # normalモードへ切り替わった場合は魔法の履歴を使わない
-    history = if magic_mode && !session[:_switch_complete]
+    history = if avoid_repeat_mode && !session[:_switch_complete]
                 restore_history(session[:group_history])
               else
                 []
@@ -141,8 +143,8 @@ class KumiwakeController < ApplicationController
     # ========================================
 
     total_possible_pairs = session[:names].length * (session[:names].length - 1) / 2
-    if magic_mode && history.uniq.length >= total_possible_pairs
-      session[:magic_mode] = true
+    if avoid_repeat_mode && history.uniq.length >= total_possible_pairs
+      session[:avoid_repeat_mode] = true
       session[:kumiwake_limit_reached] = true
       session.delete(:_switch_complete)
 
@@ -162,7 +164,7 @@ class KumiwakeController < ApplicationController
     # ========================================
 
     if @groups.nil?
-      if magic_mode
+      if avoid_repeat_mode
         session[:kumiwake_limit_reached] = true
 
         redirect_to kumiwake_path
@@ -190,12 +192,12 @@ class KumiwakeController < ApplicationController
     # 過去の結果を保存（履歴用）
     # ========================================
 
-    if magic_mode
+    if avoid_repeat_mode
       past_results = session[:past_results] || []
       past_results << {
         round: session[:round_number],
         groups: compact_groups(@groups),
-        draw_count: session[:draw_count]
+        round_draw_count: session[:draw_count]
       }
       session[:past_results] = past_results
     end
@@ -204,7 +206,7 @@ class KumiwakeController < ApplicationController
     # 魔法モードだけ履歴を保存
     # ========================================
 
-    if magic_mode && !session[:_switch_complete]
+    if avoid_repeat_mode && !session[:_switch_complete]
       @groups.each do |group|
         group.combination(2).each do |member_a, member_b|
           pair = [member_a["id"], member_b["id"]].sort
@@ -239,13 +241,13 @@ class KumiwakeController < ApplicationController
 
     @group_names = session[:group_names] || []
     @draw_count = session[:draw_count].to_i
-    @draw_count = last_result["draw_count"].to_i if @draw_count.zero? && last_result.present?
+    @draw_count = last_result["round_draw_count"].to_i if @draw_count.zero? && last_result.present?
     @round_number = @draw_count.positive? ? @draw_count : 1
 
     # 現在のモード
-    @magic_mode = session[:magic_mode] == true
+    @avoid_repeat_mode = session[:avoid_repeat_mode] == true
     @past_results = Array(session[:past_results]).compact
-    @show_history_button = @magic_mode && @past_results.length >= 2
+    @show_history_button = @avoid_repeat_mode && @past_results.length >= 2
   end
 
   # ========================================
@@ -260,7 +262,7 @@ class KumiwakeController < ApplicationController
       {
         "round" => result["round"] || result[:round],
         "groups" => restore_groups(result["groups"] || result[:groups]),
-        "draw_count" => result["draw_count"] || result[:draw_count]
+        "round_draw_count" => result["round_draw_count"] || result[:round_draw_count]
       }
     end
   end
@@ -275,6 +277,12 @@ class KumiwakeController < ApplicationController
   end
 
   private
+
+  def migrate_legacy_mode_key
+    return unless session[:avoid_repeat_mode].nil? && !session[:magic_mode].nil?
+
+    session[:avoid_repeat_mode] = session.delete(:magic_mode)
+  end
 
   def compact_groups(groups)
     groups.map do |group|
@@ -322,7 +330,7 @@ class KumiwakeController < ApplicationController
     session.delete(:round_number)
     session.delete(:past_results)
     session.delete(:kumiwake_limit_reached)
-    session.delete(:magic_mode)
+    session.delete(:avoid_repeat_mode)
     session.delete(:_switch_complete)
   end
 

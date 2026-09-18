@@ -18,8 +18,8 @@ export default class extends Controller {
     const limitReached =
       this.messageTarget.dataset.limitReached
 
-    const magicMode =
-      this.messageTarget.dataset.magicMode
+    const avoidRepeatMode =
+      this.messageTarget.dataset.avoidRepeatMode
 
     const magicMaxRounds =
       this.messageTarget.dataset.magicMaxRounds
@@ -76,7 +76,7 @@ export default class extends Controller {
   // 抽選POST
   // ========================================
 
-  submitDraw(magicMode) {
+  submitDraw(avoidRepeatMode) {
     const form = document.createElement("form")
 
     form.method = "POST"
@@ -96,8 +96,8 @@ export default class extends Controller {
     const modeInput = document.createElement("input")
 
     modeInput.type = "hidden"
-    modeInput.name = "magic_mode"
-    modeInput.value = magicMode ? "true" : "false"
+    modeInput.name = "avoid_repeat_mode"
+    modeInput.value = avoidRepeatMode ? "true" : "false"
 
     form.appendChild(csrfInput)
     form.appendChild(modeInput)
@@ -770,7 +770,7 @@ export default class extends Controller {
     const modeInput = document.createElement("input")
 
     modeInput.type = "hidden"
-    modeInput.name = "magic_mode"
+    modeInput.name = "avoid_repeat_mode"
     modeInput.value = "false"
 
     form.appendChild(csrfInput)

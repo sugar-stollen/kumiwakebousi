@@ -7,8 +7,17 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "migrates the legacy mode key" do
+    session[:magic_mode] = false
+
+    get "/kumiwake"
+
+    assert_nil session[:magic_mode]
+    assert_equal false, session[:avoid_repeat_mode]
+  end
+
   test "starting from home clears the previous limit state" do
-    session[:magic_mode] = true
+    session[:avoid_repeat_mode] = true
     session[:kumiwake_limit_reached] = true
     session[:group_history] = ["1:2"]
 
@@ -16,7 +25,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_nil session[:kumiwake_limit_reached]
-    assert_nil session[:magic_mode]
+    assert_nil session[:avoid_repeat_mode]
     assert_nil session[:group_history]
     assert_select "p[data-limit-reached='']"
   end
@@ -41,7 +50,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_names", params: { names: ["太郎", "次郎", "三郎", "四郎"] }
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B"] }
 
-    post "/kumiwake/draw", params: { magic_mode: "true" }
+    post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
     follow_redirect!
     assert_select "h1", /第1回目/
 
@@ -54,13 +63,13 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_names", params: { names: ["太郎", "次郎", "三郎", "四郎", "五郎", "六郎"] }
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B", "C"] }
 
-    post "/kumiwake/draw", params: { magic_mode: "true" }
+    post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
     follow_redirect!
     assert_select "h1", /第1回目/
     assert_select "a.history-button", 0
     assert_select "form[data-turbo='false']", 1
 
-    post "/kumiwake/draw", params: { magic_mode: "true" }
+    post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
     follow_redirect!
     assert_select "h1", /第2回目/
     assert_select "a.history-button", 1
@@ -72,7 +81,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     get "/kumiwake/result"
     assert_response :success
 
-    post "/kumiwake/draw", params: { switch_to_normal: "true", magic_mode: "false" }
+    post "/kumiwake/draw", params: { switch_to_normal: "true", avoid_repeat_mode: "false" }
     follow_redirect!
     assert_select "h1", /第3回目/
     assert_select "a.history-button", 0
@@ -82,7 +91,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_names", params: { names: ["太郎", "次郎", "三郎", "四郎"] }
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B"] }
 
-    post "/kumiwake/draw", params: { magic_mode: "true" }
+    post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
     follow_redirect!
     assert_select "h1", /第1回目/
 
@@ -96,11 +105,11 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_names", params: { names: ["太郎", "次郎", "三郎", "四郎"] }
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B"] }
 
-    session[:magic_mode] = true
+    session[:avoid_repeat_mode] = true
     session[:group_history] = [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
     session[:kumiwake_limit_reached] = true
 
-    post "/kumiwake/draw", params: { switch_to_normal: "true", magic_mode: "false" }
+    post "/kumiwake/draw", params: { switch_to_normal: "true", avoid_repeat_mode: "false" }
     follow_redirect!
     assert_select "h1", /第1回目/
     assert_select "a.history-button", 0
@@ -111,7 +120,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B"] }
 
     3.times do
-      post "/kumiwake/draw", params: { magic_mode: "true" }
+      post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
       follow_redirect!
     end
 
@@ -131,15 +140,15 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     post "/kumiwake/save_names", params: { names: ["太郎", "次郎", "三郎", "四郎"] }
     post "/kumiwake/save_group_names", params: { group_names: ["A", "B"] }
 
-    post "/kumiwake/draw", params: { magic_mode: "true" }
+    post "/kumiwake/draw", params: { avoid_repeat_mode: "true" }
     follow_redirect!
 
-    post "/kumiwake/draw", params: { switch_to_normal: "true", magic_mode: "false" }
+    post "/kumiwake/draw", params: { switch_to_normal: "true", avoid_repeat_mode: "false" }
     follow_redirect!
     magic_history_count = session[:past_results].length
 
     20.times do
-      post "/kumiwake/draw", params: { magic_mode: "false" }
+      post "/kumiwake/draw", params: { avoid_repeat_mode: "false" }
       follow_redirect!
     end
 

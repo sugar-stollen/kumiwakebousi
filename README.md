@@ -238,6 +238,18 @@ HTML＋JavaScriptで作られたWebツール
 新しい技術を一度に増やすと、学習と実装の両方に時間がかかり、Issueの見積もりが難しくなります。  
 そのためMVPではRails、ERB、Stimulusを中心に実装を目指します。
 
+## テスト・品質チェック
+
+本アプリはユーザーアカウントや永続化するユーザーモデルを持たず、名簿と履歴をセッションで管理します。そのため、FactoryBotの参加者データを使った組み分け・CSVの単体テストと、名簿登録から抽選・履歴・CSV出力までの操作テストを実行します。
+
+```sh
+docker compose up -d db
+docker compose run --rm -e RAILS_ENV=test web bundle exec rake test
+docker compose run --rm web bundle exec rubocop --only Lint
+```
+
+テスト実行後、行カバレッジレポートは`coverage/index.html`に生成されます。Bulletはテスト環境でN+1クエリを検出するとテストを失敗させます。
+
 ## 補足
 
 背景画像・キャラクター・タイトルロゴにはAI生成画像を使用しています。

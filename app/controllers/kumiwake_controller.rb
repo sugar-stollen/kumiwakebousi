@@ -1,8 +1,10 @@
 class KumiwakeController < ApplicationController
+  include KumiwakeSessionState
+
   before_action :migrate_legacy_mode_key
 
   def index
-    clear_round_state if params[:new] == "true"
+    clear_round_state if params[:new] == 'true'
 
     @names = session[:names] || []
 
@@ -42,8 +44,8 @@ class KumiwakeController < ApplicationController
     # 登録番号付きで保存
     session[:names] = names.each_with_index.map do |name, index|
       {
-        "id" => index + 1,
-        "name" => name
+        'id' => index + 1,
+        'name' => name
       }
     end
 
@@ -65,11 +67,7 @@ class KumiwakeController < ApplicationController
     group_names = params[:group_names]
 
     group_names = group_names.each_with_index.map do |name, index|
-      if name.blank?
-        "#{('A'.ord + index).chr}組"
-      else
-        name
-      end
+      name.presence || "#{('A'.ord + index).chr}組"
     end
 
     session[:group_names] = group_names
@@ -100,7 +98,7 @@ class KumiwakeController < ApplicationController
     # 上限後の「続ける」
     # ここは最優先で通常モードへ切り替える
     # ========================================
-    if params[:switch_to_normal] == "true" || params[:normal_mode] == "true" || params[:avoid_repeat_mode] == "false"
+    if params[:switch_to_normal] == 'true' || params[:normal_mode] == 'true' || params[:avoid_repeat_mode] == 'false'
       session[:avoid_repeat_mode] = false
       session.delete(:group_history)
       session.delete(:past_results)
@@ -116,7 +114,7 @@ class KumiwakeController < ApplicationController
     # JSから送られてきた avoid_repeat_mode を採用する
     #
     if session[:avoid_repeat_mode].nil? && params[:avoid_repeat_mode].present?
-      session[:avoid_repeat_mode] = params[:avoid_repeat_mode] == "true"
+      session[:avoid_repeat_mode] = params[:avoid_repeat_mode] == 'true'
     end
 
     avoid_repeat_mode = session[:avoid_repeat_mode] == true
@@ -209,7 +207,7 @@ class KumiwakeController < ApplicationController
     if avoid_repeat_mode && !session[:_switch_complete]
       @groups.each do |group|
         group.combination(2).each do |member_a, member_b|
-          pair = [member_a["id"], member_b["id"]].sort
+          pair = [member_a['id'], member_b['id']].sort
 
           history << pair unless history.include?(pair)
         end
@@ -230,7 +228,7 @@ class KumiwakeController < ApplicationController
 
   def result
     last_result = Array(session[:past_results]).compact.last
-    stored_groups = session[:current_groups] || last_result&.dig("groups") || last_result&.dig(:groups)
+    stored_groups = session[:current_groups] || last_result&.dig('groups') || last_result&.dig(:groups)
     @groups = restore_groups(stored_groups)
 
     # 結果がない場合
@@ -241,7 +239,7 @@ class KumiwakeController < ApplicationController
 
     @group_names = session[:group_names] || []
     @draw_count = session[:draw_count].to_i
-    @draw_count = last_result["round_draw_count"].to_i if @draw_count.zero? && last_result.present?
+    @draw_count = last_result['round_draw_count'].to_i if @draw_count.zero? && last_result.present?
     @round_number = @draw_count.positive? ? @draw_count : 1
 
     # 現在のモード
@@ -260,9 +258,9 @@ class KumiwakeController < ApplicationController
       next unless result.is_a?(Hash)
 
       {
-        "round" => result["round"] || result[:round],
-        "groups" => restore_groups(result["groups"] || result[:groups]),
-        "round_draw_count" => result["round_draw_count"] || result[:round_draw_count]
+        'round' => result['round'] || result[:round],
+        'groups' => restore_groups(result['groups'] || result[:groups]),
+        'round_draw_count' => result['round_draw_count'] || result[:round_draw_count]
       }
     end
   end
@@ -286,26 +284,7 @@ class KumiwakeController < ApplicationController
 
   def compact_groups(groups)
     groups.map do |group|
-      group.map { |member| member["id"] || member[:id] }
-    end
-  end
-
-  def restore_groups(groups)
-    return nil if groups.nil?
-
-    members_by_id = Array(session[:names]).each_with_object({}) do |member, members|
-      id = member["id"] || member[:id]
-      members[id.to_i] = member
-    end
-
-    Array(groups).map do |group|
-      Array(group).filter_map do |member|
-        if member.is_a?(Hash)
-          member
-        else
-          members_by_id[member.to_i]
-        end
-      end
+      group.map { |member| member['id'] || member[:id] }
     end
   end
 
@@ -318,20 +297,9 @@ class KumiwakeController < ApplicationController
       if pair.is_a?(Array)
         pair.map(&:to_i)
       elsif pair.is_a?(String)
-        pair.split(":", 2).map(&:to_i) if pair.include?(":")
+        pair.split(':', 2).map(&:to_i) if pair.include?(':')
       end
     end
-  end
-
-  def clear_round_state
-    session.delete(:group_history)
-    session.delete(:current_groups)
-    session.delete(:draw_count)
-    session.delete(:round_number)
-    session.delete(:past_results)
-    session.delete(:kumiwake_limit_reached)
-    session.delete(:avoid_repeat_mode)
-    session.delete(:_switch_complete)
   end
 
   # ========================================
@@ -339,28 +307,9 @@ class KumiwakeController < ApplicationController
   # ========================================
 
   def magic_max_rounds
-    members_count = session[:names]&.length.to_i
-    group_count = session[:group_count].to_i
-
-    return 0 if members_count < 2 || group_count < 1
-
-    total_pairs = members_count * (members_count - 1) / 2
-
-    base_size = members_count / group_count
-    remainder = members_count % group_count
-
-    pairs_per_round = 0
-
-    group_count.times do |i|
-      size = base_size
-      size += 1 if i < remainder
-
-      pairs_per_round += size * (size - 1) / 2
-    end
-
-    return 0 if pairs_per_round.zero?
-
-    total_pairs / pairs_per_round
+    GroupAllocator.maximum_rounds(
+      member_count: session[:names]&.length.to_i,
+      group_count: session[:group_count].to_i
+    )
   end
-
 end

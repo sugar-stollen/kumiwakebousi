@@ -1,4 +1,21 @@
 class GroupAllocator
+  def self.maximum_rounds(member_count:, group_count:)
+    return 0 if member_count < 2 || group_count < 1
+
+    total_pairs = member_count * (member_count - 1) / 2
+    base_size = member_count / group_count
+    remainder = member_count % group_count
+
+    pairs_per_round = group_count.times.sum do |index|
+      size = base_size + (index < remainder ? 1 : 0)
+      size * (size - 1) / 2
+    end
+
+    return 0 if pairs_per_round.zero?
+
+    total_pairs / pairs_per_round
+  end
+
   def initialize(members:, group_count:, history: [])
     @members = members
     @group_count = group_count
@@ -60,7 +77,7 @@ class GroupAllocator
 
     groups.each do |group|
       group.combination(2).each do |member_a, member_b|
-        pair = [member_a["id"], member_b["id"]].sort
+        pair = [member_a['id'], member_b['id']].sort
 
         score += 1 unless @history.include?(pair)
       end
@@ -84,10 +101,10 @@ class GroupAllocator
     end
   end
 
-   # 全メンバーの組み合わせ
+  # 全メンバーの組み合わせ
   def all_pairs
     @members.combination(2).map do |member_a, member_b|
-      [member_a["id"], member_b["id"]].sort
+      [member_a['id'], member_b['id']].sort
     end
   end
 end

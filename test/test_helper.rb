@@ -1,6 +1,12 @@
-ENV["RAILS_ENV"] ||= "test"
-require_relative "../config/environment"
-require "rails/test_help"
+ENV['RAILS_ENV'] ||= 'test'
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/test/'
+end
+
+require_relative '../config/environment'
+require 'rails/test_help'
+require 'factory_bot_rails'
 
 module ActiveSupport
   class TestCase
@@ -9,6 +15,8 @@ module ActiveSupport
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
+
+    include FactoryBot::Syntax::Methods
 
     # Add more helper methods to be used by all tests here...
   end

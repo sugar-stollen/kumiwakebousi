@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupAllocator
   def self.maximum_rounds(member_count:, group_count:)
     return 0 if member_count < 2 || group_count < 1
@@ -29,17 +31,10 @@ class GroupAllocator
     1000.times do
       groups = make_random_groups
       score = calculate_score(groups)
-
-      if score > best_score
-        best_score = score
-        best_groups = groups
-      end
-
-      # 今回の組み合わせがすべて新しいなら採用
+      best_groups, best_score = improved_result(best_groups, best_score, groups, score)
       return groups if score == total_pairs_per_round
     end
 
-    # 完全に新しい組み合わせが作れなくても、最も新しい組み合わせを返す
     best_groups
   end
 
@@ -54,36 +49,27 @@ class GroupAllocator
 
   def make_random_groups
     shuffled_members = @members.shuffle
-
-    base_size = @members.length / @group_count
-    remainder = @members.length % @group_count
-
-    groups = []
     start_index = 0
 
-    @group_count.times do |i|
-      group_size = base_size
-      group_size += 1 if i < remainder
-
-      groups << shuffled_members[start_index, group_size]
+    make_group_sizes.map do |group_size|
+      group = shuffled_members[start_index, group_size]
       start_index += group_size
+      group
     end
-
-    groups
   end
 
   def calculate_score(groups)
-    score = 0
-
-    groups.each do |group|
-      group.combination(2).each do |member_a, member_b|
-        pair = [member_a['id'], member_b['id']].sort
-
-        score += 1 unless @history.include?(pair)
+    groups.sum do |group|
+      group.combination(2).count do |member_a, member_b|
+        !@history.include?([member_a['id'], member_b['id']].sort)
       end
     end
+  end
 
-    score
+  def improved_result(best_groups, best_score, groups, score)
+    return [groups, score] if score > best_score
+
+    [best_groups, best_score]
   end
 
   def total_pairs_per_round

@@ -1,4 +1,6 @@
-require "csv"
+# frozen_string_literal: true
+
+require 'csv'
 
 class CsvImporter
   def initialize(file)
@@ -9,7 +11,7 @@ class CsvImporter
     csv = CSV.read(@file.path, headers: true)
 
     csv.filter_map do |row|
-      name = row["名前"] || row[0]
+      name = row['名前'] || row[0]
       name.presence
     end
   end

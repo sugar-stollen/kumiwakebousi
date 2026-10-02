@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'tempfile'
 
@@ -35,18 +37,27 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to '/kumiwake'
   end
 
-  test 'removes blank names before drawing' do
+  test 'requires at least three nonblank roster names' do
     post '/kumiwake/save_names', params: { names: ['太郎', '', '次郎'] }
+
+    assert_redirected_to '/kumiwake/input'
+    follow_redirect!
+    assert_response :success
+    assert_select '.alert', 0
+  end
+
+  test 'removes blank names before drawing' do
+    post '/kumiwake/save_names', params: { names: ['太郎', '', '次郎', '三郎'] }
     post '/kumiwake/save_group_names', params: { group_names: ['全員'] }
     post '/kumiwake/draw', params: { avoid_repeat_mode: 'false' }
     follow_redirect!
 
-    assert_equal %w[太郎 次郎], css_select('.group-result p').map { |node| node.text.strip }.sort
+    assert_equal %w[三郎 太郎 次郎], css_select('.group-result p').map { |node| node.text.strip }.sort
   end
 
   test 'imports names from a CSV file' do
     file = Tempfile.new(['names', '.csv'])
-    file.write("名前\n太郎\n次郎\n")
+    file.write("名前\n太郎\n次郎\n三郎\n")
     file.close
 
     post '/csv/import', params: {
@@ -55,7 +66,7 @@ class KumiwakeControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to '/kumiwake'
     follow_redirect!
-    assert_select "p[data-names-count='2'][data-from-input='true']"
+    assert_select "p[data-names-count='3'][data-from-input='true']"
   ensure
     file&.unlink
   end

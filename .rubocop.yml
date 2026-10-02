@@ -12,3 +12,9 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - "test/**/*"
+    - "config/environments/development.rb"
+    - "config/routes.rb"
+
+Metrics/ClassLength:
+  Exclude:
+    - "test/controllers/kumiwake_controller_test.rb"

@@ -1,14 +1,28 @@
+# frozen_string_literal: true
+
 class CsvController < ApplicationController
   include KumiwakeSessionState
 
   def export
     groups = restore_groups(session[:current_groups] || latest_past_groups)
+    return redirect_to kumiwake_path, alert: '組み分け結果がありません' if groups.blank?
 
-    if groups.blank?
-      redirect_to kumiwake_path, alert: '組み分け結果がありません'
-      return
-    end
+    send_csv(groups)
+  end
 
+  def import
+    return redirect_to_input_with_alert if params[:file].blank?
+
+    roster = ParticipantRoster.new(CsvImporter.new(params[:file]).call)
+    return redirect_to kumiwake_input_path unless roster.valid?
+
+    store_roster(roster)
+    redirect_to kumiwake_path
+  end
+
+  private
+
+  def send_csv(groups)
     csv = CsvExporter.new(
       groups: groups,
       group_names: session[:group_names] || []
@@ -20,35 +34,15 @@ class CsvController < ApplicationController
               disposition: 'attachment'
   end
 
-  def import
-    file = params[:file]
-
-    if file.blank?
-      redirect_to kumiwake_input_path, alert: 'CSVファイルを選択してください'
-      return
-    end
-
-    names = CsvImporter.new(file).call
-
-    if names.empty?
-      redirect_to kumiwake_input_path, alert: '名前が見つかりませんでした'
-      return
-    end
-
-    session[:names] = names.each_with_index.map do |name, index|
-      {
-        'id' => index + 1,
-        'name' => name
-      }
-    end
-
-    clear_round_state
-    session[:from_name_input] = true
-
-    redirect_to kumiwake_path
+  def redirect_to_input_with_alert
+    redirect_to kumiwake_input_path, alert: 'CSVファイルを選択してください'
   end
 
-  private
+  def store_roster(roster)
+    session[:names] = roster.to_session
+    clear_round_state
+    session[:from_name_input] = true
+  end
 
   def latest_past_groups
     result = Array(session[:past_results]).compact.last

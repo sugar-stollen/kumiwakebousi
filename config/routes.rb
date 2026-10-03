@@ -50,7 +50,9 @@ Rails.application.routes.draw do
   get 'up' => 'rails/health#show',
       as: :rails_health_check
 
-  root 'home#index'
+  get 'splash', to: 'splash#show', as: :splash
+
+  root 'splash#show'
 
   post 'csv/import',
        to: 'csv#import',

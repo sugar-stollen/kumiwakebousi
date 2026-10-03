@@ -6,7 +6,6 @@ export default class extends Controller {
   connect() {
     this.scene = "opening"
     this.startOpening()
-    
   }
 
   // --------------------------------
@@ -237,4 +236,3 @@ skip() {
   }
 
 }
-

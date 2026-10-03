@@ -25,6 +25,15 @@
           data-magic-max-rounds="<%= @magic_max_rounds %>">
         </p>
 
+        <button
+          type="button"
+          class="skip-button"
+          hidden
+          data-kumiwake-target="ceremonySkip"
+          data-action="click->kumiwake#skipCeremony:stop">
+          スキップ
+        </button>
+
       </div>
       <input
         type="file"

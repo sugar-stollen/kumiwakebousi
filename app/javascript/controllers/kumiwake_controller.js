@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["message", "menu", "csvFileInput"]
+  static targets = ["message", "menu", "csvFileInput", "ceremonySkip"]
 
   connect() {
     this.menuTarget.innerHTML = ""
@@ -68,6 +68,7 @@ export default class extends Controller {
   // ========================================
 
   goToDraw() {
+    this.setCeremonyEffects(false)
     this.submitDraw(this.bousiMagic === true)
   }
 
@@ -353,23 +354,25 @@ export default class extends Controller {
         this.currentStep = "bousi-magic-yes-2"
 
         this.showMessage(
-          "よしきた！　では　魔法をかけるぞい"
+          "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
         )
 
         break
 
 
       case "bousi-magic-yes-2":
+        // 呪文を唱え終わってから、ランダムな組み分け演出へ進む。
+        this.startCeremony()
 
-        this.currentStep = "演出"
+        break
 
-        this.showMessage(
-          "クミワ～ケ・カブルノｫ～～ボウシｨ～～～"
-        )
 
-        this.showMenuAfterDelay(() => {
-          this.showDrawMenu()
-        })
+      // ========================================
+      // 組み分け演出のセリフ
+      // ========================================
+
+      case "ceremony":
+        this.showNextCeremonyLine()
 
         break
 
@@ -454,6 +457,103 @@ export default class extends Controller {
     setTimeout(() => {
       callback()
     }, 1000)
+  }
+
+
+  // ========================================
+  // 組み分け演出
+  // ========================================
+
+  ceremonyScenarios() {
+    return [
+      [
+        "ふーむ・・・　コイツは難しい",
+        "勇気は…ないな",
+        "頭も良くはない…",
+        "じゃが、才能は！",
+        "これは驚いた！才能も普通じゃ！",
+        "・・・　・・・",
+        "さぁて　どこに入れたもんかな～",
+        "まぁ　適当でいいじゃろ"
+      ],
+      [
+        "ん？なんじゃ？",
+        "「スリz…リｎは…」「…は嫌だ」？",
+        "何を言っておる！？",
+        "なにやらブツブツ言っておってよく聞こえんぞ？",
+        "よしわかった。",
+        "とにかく、その　スリz…リｎ　以外は　嫌なんじゃな！",
+        "ならばそこにいれてやるとしよう！！！",
+        "オヌシはその　スリz…リｎ　というところにしておいたぞ",
+        "ワシに感謝するんじゃぞぉぉ"
+      ],
+      [
+        "ほぅ　また　あの家の子じゃな？",
+        "オヌシは特徴的じゃからすぐに分かったぞ",
+        "オヌシの行先はもう決まっておる。",
+        "グリｆンＤoっ　なに　「待ってくれ」じゃと？",
+        "違うところに入りたいのか、そうか…",
+        "残念じゃよ…一族の伝統なのになぁ",
+        "オヌシがそういうなら仕方ないなぁ…",
+        "ご両親はさぞかし…",
+        "なに！？わかってくれるか",
+        "そうか、そうか、やはり君は　グリｆンＤo　が相応しい！",
+        "それが運命じゃよ"
+      ]
+    ]
+  }
+
+  startCeremony() {
+    const scenarios = this.ceremonyScenarios()
+    const randomIndex = Math.floor(Math.random() * scenarios.length)
+
+    this.currentStep = "ceremony-entering"
+    this.ceremonyLines = scenarios[randomIndex]
+    this.ceremonyLineIndex = 0
+    this.setCeremonyEffects(true)
+    this.element.classList.add("is-ceremony-entering")
+
+    this.ceremonyEntryTimer = setTimeout(() => {
+      this.element.classList.remove("is-ceremony-entering")
+      this.currentStep = "ceremony"
+      this.ceremonySkipTarget.hidden = false
+      this.showNextCeremonyLine()
+    }, 2000)
+  }
+
+  showNextCeremonyLine() {
+    if (this.ceremonyLineIndex >= this.ceremonyLines.length) {
+      this.finishCeremony()
+      return
+    }
+
+    this.showMessage(this.ceremonyLines[this.ceremonyLineIndex])
+    this.ceremonyLineIndex += 1
+
+    if (this.ceremonyLineIndex === this.ceremonyLines.length) {
+      this.ceremonyTimer = setTimeout(() => this.finishCeremony(), 1000)
+    }
+  }
+
+  skipCeremony() {
+    if (this.currentStep !== "ceremony") return
+
+    this.finishCeremony()
+  }
+
+  finishCeremony() {
+    clearTimeout(this.ceremonyTimer)
+    clearTimeout(this.ceremonyEntryTimer)
+    this.currentStep = "ceremony-finished"
+    this.ceremonySkipTarget.hidden = true
+    this.showMessage(this.ceremonyLines[this.ceremonyLines.length - 1])
+    this.showDrawMenu()
+  }
+
+  setCeremonyEffects(active) {
+    // 演出中だけのアニメーションや画面効果は、このクラスを起点に追加する。
+    this.element.classList.toggle("is-ceremony", active)
+    if (!active) this.element.classList.remove("is-ceremony-entering")
   }
 
 

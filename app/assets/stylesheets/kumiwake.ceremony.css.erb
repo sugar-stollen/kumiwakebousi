@@ -1,0 +1,94 @@
+/* 舞台側だけに重ねる演出用ライト。会話枠と選択肢は前面に残す。 */
+.kumiwake .home-screen.is-ceremony::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.56);
+}
+
+/* 上の一点から下へ広がる、オレンジ色の光 */
+.kumiwake .home-screen.is-ceremony::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -200%;
+  right: 0;
+  left: 0;
+  height: 300%;
+  pointer-events: none;
+  clip-path: polygon(
+    50% 0,
+    50% 0,
+    calc(50% + 52.9vh) 100%,
+    calc(50% - 52.9vh) 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 190, 105, 0.5) 0%,
+    rgba(255, 153, 72, 0.3) 55%,
+    rgba(255, 132, 54, 0.1) 100%
+  );
+  filter: blur(12px);
+  transform-origin: 50% 0;
+  animation: ceremony-spotlight-pulse 3.6s ease-in-out infinite alternate;
+}
+
+/* セリフ枠と選択肢はライトのレイヤーより前に置いて読みやすさを保つ */
+.kumiwake .home-screen.is-ceremony .command-area {
+  z-index: 5;
+}
+
+/* 帽子のキャラクターはライトより前に出し、光の色を重ねない */
+.kumiwake .home-screen.is-ceremony .hat-area {
+  z-index: 4;
+}
+
+/* 演出へ入る瞬間に2秒かけて暗くなり、細い光が広がる */
+.kumiwake .home-screen.is-ceremony-entering::before {
+  animation: ceremony-blackout 2s ease-in-out both;
+}
+
+.kumiwake .home-screen.is-ceremony-entering::after {
+  animation: ceremony-spotlight-arrive 2s ease-out both;
+}
+
+@keyframes ceremony-spotlight-pulse {
+  from { opacity: 0.76; }
+  to { opacity: 1; }
+}
+
+@keyframes ceremony-blackout {
+  0% { background-color: rgba(0, 0, 0, 0); }
+  100% { background-color: rgba(0, 0, 0, 0.94); }
+}
+
+@keyframes ceremony-spotlight-arrive {
+  0% {
+    clip-path: polygon(
+      50% 0,
+      50% 0,
+      calc(50% + 2vh) 100%,
+      calc(50% - 2vh) 100%
+    );
+    opacity: 0.35;
+  }
+  100% {
+    clip-path: polygon(
+      50% 0,
+      50% 0,
+      calc(50% + 52.9vh) 100%,
+      calc(50% - 52.9vh) 100%
+    );
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kumiwake .home-screen.is-ceremony::after,
+  .kumiwake .home-screen.is-ceremony-entering::before,
+  .kumiwake .home-screen.is-ceremony-entering::after {
+    animation: none;
+  }
+}

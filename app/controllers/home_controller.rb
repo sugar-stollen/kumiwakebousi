@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  def index; end
+  def index
+    @returning_from_kumiwake = params[:returning] == 'true'
+  end
 end

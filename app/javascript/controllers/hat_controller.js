@@ -4,6 +4,11 @@ export default class extends Controller {
   static targets = ["message", "menu", "skip"]
 
   connect() {
+    if (this.element.dataset.returningFromKumiwake === "true") {
+      this.startReturningHome()
+      return
+    }
+
     this.scene = "opening"
     this.startOpening()
   }
@@ -54,8 +59,13 @@ export default class extends Controller {
   // オープニングのセリフを次へ
   // --------------------------------
 
-next(event) {
+  next(event) {
   event.preventDefault()
+
+  if (this.scene === "returning") {
+    this.showNextReturningMessage()
+    return
+  }
 
   if (this.scene === "no") {
     this.nextAfterNo()
@@ -71,6 +81,33 @@ next(event) {
     this.showNextOpeningMessage()
   }
 }
+
+  startReturningHome() {
+    this.scene = "returning"
+    this.returningMessages = [
+      "おかえり　こどもたちよ",
+      "次は何をするんじゃ？"
+    ]
+    this.returningMessageIndex = 0
+    this.menuTarget.innerHTML = ""
+
+    const skipButton = document.getElementById("opening-skip-button")
+    if (skipButton) skipButton.style.display = "none"
+
+    this.showNextReturningMessage()
+  }
+
+  showNextReturningMessage() {
+    if (this.returningMessageIndex >= this.returningMessages.length) return
+
+    this.showMessage(this.returningMessages[this.returningMessageIndex])
+    this.returningMessageIndex += 1
+
+    if (this.returningMessageIndex === this.returningMessages.length) {
+      this.scene = "main"
+      this.showMainMenu()
+    }
+  }
   // --------------------------------
   // はい・いいえ
   // --------------------------------

@@ -102,7 +102,7 @@ class KumiwakeController < ApplicationController
 
   def finish
     clear_round_state
-    redirect_to home_index_path
+    redirect_to home_index_path(returning: true)
   end
 
   private

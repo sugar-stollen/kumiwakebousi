@@ -11,6 +11,35 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div data-controller="bgm">
+      <audio data-bgm-target="audio" src="/bgm.mp3" preload="metadata" data-action="timeupdate->bgm#trimEnd"></audio>
+      <div class="bgm-controls">
+        <button
+          type="button"
+          class="bgm-switch"
+          role="switch"
+          aria-checked="false"
+          data-bgm-target="button"
+          data-action="click->bgm#toggle">
+          BGM OFF
+        </button>
+        <label class="bgm-volume">
+          <span>音量</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            aria-label="BGMの音量"
+            data-bgm-target="volume"
+            data-action="input->bgm#setVolume">
+        </label>
+      </div>
+      <%= yield %>
+    </div>
   </body>
 </html>
+
+
+
+

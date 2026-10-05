@@ -21,3 +21,59 @@ body {
 body {
   overflow-x: hidden;
 }
+.bgm-controls {
+  position: fixed;
+  z-index: 1000;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  justify-items: stretch;
+  gap: 6px;
+  width: 144px;
+}
+
+.bgm-switch {
+  box-sizing: border-box;
+  width: 90%;
+  padding: 9px 13px;
+  border: 1px solid rgba(229, 200, 141, 0.8);
+  border-radius: 3px;
+  background: rgba(18, 20, 23, 0.86);
+  color: #fff7e8;
+  font: 600 12px "Courier New", monospace;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.bgm-switch.is-on {
+  background: #e5c88d;
+  color: #1b1b1a;
+}
+
+.bgm-switch:focus-visible {
+  outline: 2px solid #fff7e8;
+  outline-offset: 3px;
+}
+
+.bgm-volume {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 90%;
+  gap: 8px;
+  padding: 5px 8px;
+  border: 1px solid rgba(229, 200, 141, 0.55);
+  border-radius: 3px;
+  background: rgba(18, 20, 23, 0.86);
+  color: #fff7e8;
+  font: 11px "Courier New", monospace;
+}
+
+.bgm-volume input {
+  flex: 1;
+  min-width: 0;
+  accent-color: #e5c88d;
+}
+
+
+
